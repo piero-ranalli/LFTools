@@ -1,0 +1,16 @@
+{
+    "evolution" : "ldde",
+    "catalogues" : [
+	{
+	    "cat" : "test.cat",
+	    "area": "xmmcosmos-area.dat"
+	}
+    ],
+    "minuit" : "minuit.dat.free",
+    "cosmology" : {
+	"H0" : 70.,
+	"OL" : 0.7,
+	"OM" : 0.3
+    }
+}
+    

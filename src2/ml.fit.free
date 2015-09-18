@@ -1,0 +1,14 @@
+ FCN=  -46830.89     FROM MIGRAD    STATUS=FAILED       223 CALLS      849 TOTAL
+                     EDM=  0.24E+02    STRATEGY= 1      ERR MATRIX NOT POS-DEF
+
+  EXT PARAMETER                APPROXIMATE        STEP         FIRST   
+  NO.   NAME        VALUE          ERROR          SIZE      DERIVATIVE 
+   1    A           1.0376       0.21263E-01   0.28953        42.162    
+   2    gamma1     0.86200       0.92922E-02   0.60130E-02    20.368    
+   3    gamma2      2.7685       0.43664E-01   0.11362E-01   -7.7352    
+   4    Lstar       44.227       0.39680E-02   0.10420E-02    76.981    
+   5    zc          2.6632       0.35726E-01   0.50000        12.402    
+   6    p1          4.0202       0.27230E-01   0.38886E-02    49.545    
+   7    p2        -0.66840        1.1009       0.20000       -18.311    
+   8    alfa       0.13457       0.73628E-01   0.15469       -129.41    
+   9    La          45.389       0.55645       0.50000       -8.4961    

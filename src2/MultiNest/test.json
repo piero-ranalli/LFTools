@@ -1,0 +1,11 @@
+{
+    "seed" : 8471,
+    "root" : "chains/test-",
+    "evolution" : "ldde",
+    "catalogues" : [
+	{
+	    "cat"  : "catalogue-cdfs.dat",
+	    "area" : "xmmcdfs-completeness210.dat"
+	}
+    ]
+}

@@ -1,0 +1,20 @@
+precision.o precision.mod: precision.f90
+cosmology.o cosmology.mod: cosmology.f90 precision.mod
+fileutils.o fileutils.mod: fileutils.f90
+binarysearch.o binarysearch.mod: binarysearch.f90 precision.mod
+curves.o curves.mod: curves.f90 precision.mod binarysearch.mod
+areas.o areas.mod: areas.f90 precision.mod curves.mod fileutils.mod \
+ fileutils.mod
+u_marginal.o u_marginal.mod: u_marginal.f90 precision.mod \
+ binarysearch.mod
+integrals.o integrals.mod: integrals.f90 precision.mod
+lumf_funcs.o lumf_funcs.mod: lumf_funcs.f90 precision.mod
+photoz.o photoz.mod: photoz.f90 precision.mod
+ml.o ml.mod: ml.f90 precision.mod integrals.mod lumf_funcs.mod \
+ catalogueio.mod cosmology.mod u_marginal.mod integrals.mod
+catalogueio.o catalogueio.mod: catalogueio.f90 precision.mod areas.mod \
+ photoz.mod fileutils.mod
+startup.o startup.mod: startup.f90 precision.mod ml.mod cosmology.mod \
+ lumf_funcs.mod
+lfmlconfig.o lfmlconfig.mod: lfmlconfig.f90 startup.mod \
+ ../libextra/fson/build/fson.mod ../libextra/fson/build/fson_value_m.mod

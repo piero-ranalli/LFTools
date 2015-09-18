@@ -1,0 +1,16 @@
+binarysearch.o binarysearch.mod: binarysearch.f90
+u_marginal.o u_marginal.mod: u_marginal.f90 binarysearch.mod
+curves.o curves.mod: curves.f90 binarysearch.mod
+areas.o areas.mod: areas.f90 curves.mod fileutils.mod
+cosmology.o cosmology.mod: cosmology.f90
+gehrels.o gehrels.mod: gehrels.f90
+lumfunc.o lumfunc.mod: lumfunc.f90 areas.mod u_marginal.mod cosmology.mod \
+ cosmology.mod
+photoz.o photoz.mod: photoz.f90 binarysearch.mod
+dataread.o dataread.mod: dataread.f90 cosmology.mod lumfunc.mod \
+ binarysearch.mod photoz.mod
+catcorrectoptions.o catcorrectoptions.mod: catcorrectoptions.f90 \
+ ../libextra/m_option_parser/m_option_parser.mod photoz.mod
+fileutils.o fileutils.mod: fileutils.f90
+lfbinnedconfig.o lfbinnedconfig.mod: lfbinnedconfig.f90 \
+ ../libextra/fson/build/fson.mod ../libextra/fson/build/fson_value_m.mod

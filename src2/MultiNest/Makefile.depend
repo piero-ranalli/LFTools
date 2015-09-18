@@ -1,0 +1,12 @@
+priors.o priors.mod: priors.f90 ../precision.mod
+mn_glue.o mn_glue.mod: mn_glue.f90 ../precision.mod ../startup.mod \
+ ../lumf_funcs.mod
+params.o params.mod: params.f90 ../precision.mod priors.mod mn_glue.mod
+mn_like.o mn_like.mod: mn_like.f90 ../precision.mod mn_glue.mod \
+ params.mod
+nestwrap.o nestwrapper.mod: nestwrap.f90 /usr/local/modules/nested.mod \
+ params.mod mn_like.mod
+lfmnconfig.o lfmnconfig.mod: lfmnconfig.f90 \
+ ../../libextra/fson/build/fson.mod \
+ ../../libextra/fson/build/fson_value_m.mod params.mod
+main.o: main.f90 ../startup.mod params.mod nestwrapper.mod lfmnconfig.mod

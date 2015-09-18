@@ -1,0 +1,8 @@
+build/
+dist/
+nbproject/private/
+*.mod
+*.d
+.*.swp
+*.o
+src/tests/*driver.f90
