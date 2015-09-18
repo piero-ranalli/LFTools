@@ -71,6 +71,12 @@ call cat%read(infile)
 
 nbefore = cat%wcount()
 
+if (do_compl) then
+   write (*,*) 'doing completeness correction'
+
+   call cat%correct_w_fluxes(completenessfile)
+endif
+
 if (do_photozpdf) then
    write (*,*) 'doing photoz pdf corr'
 

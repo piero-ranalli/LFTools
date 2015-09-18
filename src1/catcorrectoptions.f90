@@ -7,8 +7,8 @@ module catcorrectoptions
   
   ! command line parameters
   type(option_t)    , allocatable :: program_options(:)
-  character*256 infile, outfile
-  logical do_nhcorr, do_photozpdf, do_range
+  character*256 infile, outfile, completenessfile
+  logical do_nhcorr, do_photozpdf, do_range, do_compl
   logical in_cmd_line, do_selectprob
   real :: myH0, myOM, myOL
   integer pdfstart,pdfstop
@@ -28,7 +28,7 @@ contains
     ! read command line parameters
     call set_parser_options ( with_equal_sign = .true. )
 
-    allocate( program_options(12) )
+    allocate( program_options(14) )
 
     call set_option ( program_options , "--infile" , "" , 'inputcatalogue.dat'  &
          , "Input catalogue" )
@@ -54,6 +54,11 @@ contains
          , "Omega_Lambda" )
     call set_option ( program_options , "--OM" , "" , .3   &
          , "Omega_Matter" )
+    call set_option ( program_options , "--complcorr" , "" , .false.   &
+         , "Completeness correction" )
+    call set_option ( program_options , "--corrfile" , "" , 'completeness.dat'   &
+         , "Completeness correction file" )
+    
 
     ! check that option keys are not set double
     ! this should only be used during development of a program.
@@ -94,6 +99,10 @@ contains
          myOM , in_cmd_line )
     call get_option_value ( program_options , "--OL" ,         &
          myOL , in_cmd_line )
+    call get_option_value ( program_options , "--complcorr" ,         &
+         do_compl , in_cmd_line )
+    call get_option_value ( program_options , "--corrfile" ,         &
+         completenessfile , in_cmd_line )
 
 
     !      write (*,*) do_nhcorr,do_fluxcorr,do_areacorr,do_photozpdf,

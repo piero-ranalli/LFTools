@@ -43,8 +43,8 @@ lf-binned: $(OBJ) lf-binned.f90
 	cp lf-binned $(BIN)
 
 .PHONY: convert
-convert convert-cosmos: convert-cosmos.f90 dataread.o binarysearch.o curves.o cosmology.o
-	gfortran -o convert-cosmos  convert-cosmos.f90 dataread.o binarysearch.o curves.o cosmology.o
+convert convert-cosmos: convert-cosmos.f90 dataread.o binarysearch.o curves.o cosmology.o fileutils.o
+	gfortran -o convert-cosmos  convert-cosmos.f90 dataread.o binarysearch.o curves.o cosmology.o fileutils.o
 	cp convert-cosmos $(BIN)
 
 

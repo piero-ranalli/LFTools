@@ -194,8 +194,11 @@ contains
 
 
 
-  subroutine catalogue_correct_w_fluxes (this)
+  subroutine catalogue_correct_w_fluxes (this,cfile)
+    use fileutils
+
     class(catalogue) :: this
+    character*256 :: cfile,row
     integer u,i
     type(curve) :: correction
     character*3 foo
@@ -204,17 +207,15 @@ contains
     ! ------------COMPLETENESS CORRECTIONS-----------------
     ! use the following file for testing purposes
     !open (newunit=u, file='completeness-corrections.dat',status='old')
-    open (newunit=u, file='completeness-fluxcorrections.dat',status='old')
+    open (newunit=u, file=cfile,status='old')
 
-    ! salta la prime 11 righe che sono di commento
-1   format (A)
-!    do i=1,11
-       read (u,1) foo
-!    enddo
 
     do i = 1,150
-       read (u,*,end=4040) correction%x(i), correction%y(i)
+       read (u,'(A)',end=4040) row
+       if (iscomment(row))  cycle
+       read (row,*) correction%x(i), correction%y(i)
     enddo
+
 4040 continue
     correction%last = i-1
 
