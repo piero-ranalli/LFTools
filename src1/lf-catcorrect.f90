@@ -104,7 +104,8 @@ nafter = cat%wcount()
 
 ! consistency check: sum of weights (i.e. number of objects) must be the same
 ! before and after corrections
-if ( abs(nbefore-nafter) > .5 ) then
+! (but NB the sum does change if we are correcting for completeness)
+if ( abs(nbefore-nafter) > .5 .and. .not. do_compl) then
    write (*,*) 'Internal error: number of objects after correction is not the same as it was before.'
    write (*,*) 'before:', nbefore, '    after:', nafter
 end if

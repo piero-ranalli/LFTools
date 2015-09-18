@@ -40,7 +40,7 @@ type catalogue
                                       weight,lum,weightcopy  ! assigned later
    integer, dimension(:), allocatable :: id,opticalid,zspecflag
    integer :: last, size
-   logical :: correct4likelihood = .false.
+   !logical :: correct4likelihood = .false.
    
    real, dimension(probUsize,probRsize,probzsize), private :: probmatrix
    real, dimension(probRsize), private     :: problogR
@@ -55,7 +55,7 @@ type catalogue
    procedure :: selectprob => catalogue_selectprob
    procedure :: selectz    => catalogue_selectz
    procedure :: selectlum  => catalogue_selectlum
-   procedure :: set_likelihood_completeness => catalogue_set_likelihood_completeness
+   !procedure :: set_likelihood_completeness => catalogue_set_likelihood_completeness
    procedure :: correct_w_fluxes => catalogue_correct_w_fluxes
    procedure :: read_probmatrix => catalogue_read_probmatrix
    procedure :: correct_w_hr_nh_prob  => catalogue_correct_w_hr_nh_prob
@@ -231,11 +231,11 @@ contains
           ! use this line for testing purposes:
           !this%weight(i) = this%weight(i) * 10.**(-corr)
 
-          if (this%correct4likelihood) then
-             this%weight(i) = this%weight(i) * corr
-          else
+          !if (this%correct4likelihood) then
+          !   this%weight(i) = this%weight(i) * corr
+          !else
              this%weight(i) = this%weight(i) / corr
-          endif
+          !endif
           !write(19,*) this%weight(i)
        end if
     end do
@@ -243,11 +243,11 @@ contains
   end subroutine catalogue_correct_w_fluxes
 
 
-  subroutine catalogue_set_likelihood_completeness (this)
-    class(catalogue) :: this
-
-    this%correct4likelihood = .true.
-  end subroutine catalogue_set_likelihood_completeness
+  !subroutine catalogue_set_likelihood_completeness (this)
+  !  class(catalogue) :: this
+  
+  !  this%correct4likelihood = .true.
+  !end subroutine catalogue_set_likelihood_completeness
 
 
   real function catalogue_wcount(this)   result(tot)
