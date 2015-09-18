@@ -74,8 +74,6 @@ write (*,*) cat%wcount()
 
 ! --------------------------------------------------
 
-!     read poissonian errors
-call gehrelsinit
 
 call cat%saveweights
 
