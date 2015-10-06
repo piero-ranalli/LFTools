@@ -89,7 +89,13 @@ do
    call cat%selectz(zmin,zmax)
 
 
-   call lumfunc_setup
+   if (do_nhcorr)  then
+      call lumfunc_setup
+      calccoverage => obscoverage
+      write (*,*) 'Doing nh corrections'
+   else
+      calccoverage => simplecoverage
+    end if
 
 
    if (cat%wcount() < .9) then  ! not even 1 object in the bin

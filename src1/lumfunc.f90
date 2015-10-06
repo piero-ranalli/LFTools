@@ -3,6 +3,7 @@ module lumfunc
 use areas
 use u_marginal
 
+
 real :: llmin,llmax,zmin,zmax
 type(coverage), pointer :: areapointer
 real, private :: finteg  ! flux for integration
@@ -10,6 +11,17 @@ real, private :: finteg  ! flux for integration
 
 integer :: usize
 real, dimension(:), pointer :: problogU
+
+abstract interface
+   function icoverage(logf,z)
+     real :: icoverage
+     real,intent(in) :: logf,z
+   end function icoverage
+end interface
+
+procedure (icoverage), pointer :: calccoverage => null()
+
+
 
 contains
 
@@ -91,7 +103,7 @@ contains
 
     logflusso = log10(flusso)
 
-    dvdz = dvdz * obscoverage(logflusso,redshift)
+    dvdz = dvdz * calccoverage(logflusso,redshift)
 
     covolf = dvdz
 
@@ -100,10 +112,23 @@ contains
 
 
 
+  real function simplecoverage(logf,z) ! simple coverage with no nhcorr
+    real,intent(in) :: logf,z
+    real area,tmp
+
+    area = areapointer%interpolate(logf)
+    simplecoverage = area/3283.
+  end function simplecoverage
+
+
+  
+
   real function obscoverage(logf,z) ! coverage at observed flux in sterad
     ! (observed means: absorbed. Hence, average it on P(U)
+    real,intent(in) :: logf,z
+
     real, dimension(:), pointer :: umarg
-    real logf,z,area,tmp
+    real area,tmp
     integer i
 
     call point_to_umarginal( umarg, z )

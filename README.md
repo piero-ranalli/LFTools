@@ -162,7 +162,9 @@ again XMM-COSMOS as an example:
                    --nhcorr=T --photozpdf=T
                    --pdfstart=63 --pdfstop=713
                    --pdfpath=/home/piero/Dati/Teoria/XMMLSS/SPEC_files_cosmos/
-                   --gamma=1.7
+                   --kcorrgamma=1.7
+		   --complcorr=T
+		   --corrfile=xmmcosmos-fluxhisto.dat
 
 In this example we have specified all possible options:
 
@@ -171,7 +173,8 @@ In this example we have specified all possible options:
   * corrections for photoz uncertainties (photozpdf);
   * photoz files are in .../SPEC_files_cosmos;
   * photoz information starts at line 63 and goes on to line 713;
-  * K-corrections assume a power-law spectrum with Gamma=1.7.
+  * K-corrections assume a power-law spectrum with Gamma=1.7;
+  * completeness corrections (complcorr, corrfile).
 
 To turn off corrections, use --nhprob=F and/or --photozpdf=F.
 
@@ -576,7 +579,8 @@ The following is an example of a configuration file:
 		    "OL" : 0.7,
 		    "OM" : 0.3
 		    },
-        "evolution" : "ldde",
+        "nhcorr" : 1,
+	"evolution" : "ldde",
         "root" : "chains/test-",
         "seed" : 8471
     }
@@ -588,13 +592,20 @@ programme in LFtools is being run. The requirements are:
   * `lf-ml` needs catalogues, cosmology, and evolution;
   * `lf-mn` needs everything.
 
-The example above includes the seed for the number generator, a root
-name for the output files (in this case, files will be put in a
-`chains` subdirectory, and their name will start with `test-`. The
-`chains` directory should be created before running `lf-mn`), the
-choice of evolution (ldde or lade), and a list of catalogues and area
-files. Note the use of square brackets to contain the list, and of
-braces to contain the {cat,area} pairs.
+The example above includes:
+
+  * the seed for the number generator;
+  * a root name for the output files (in this case, files will be put
+    in a `chains` subdirectory, and their name will start with
+    `test-`. The `chains` directory should be created before running
+    `lf-mn`);
+  * the choice of evolution (ldde or lade);
+  * a flag (nhcorr) to specify that absorption corrections should be
+    considered when computing the coverage (see Ranalli et al. 2015;
+    nhcorr=0 means using Eq.(6), nhcorr=1 means using Eq.(9);
+  * a list of catalogues and area files. Note the use of square
+    brackets to contain the list, and of braces to contain the
+    {cat,area} pairs.
 
 If there is any error in the format of the configuration file, the
 program will exit with an error referring to "object creation" or

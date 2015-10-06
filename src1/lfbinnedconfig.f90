@@ -13,8 +13,8 @@ module lfbinnedconfig  ! configuration for lf-binned
   ! public
   character(len=256), allocatable :: catlist(:),arealist(:)
   real :: myH0, myOM, myOL
+  logical :: do_nhcorr = .false.
 
-  
 contains
 
   subroutine configure
@@ -30,7 +30,8 @@ contains
     pars => fson_parse(config)
 
     call fson_get(pars,"catalogues",catarray)
-
+    call fson_get(pars,"nhcorr",do_nhcorr)
+    
     ! read catalogues
     ncats = fson_value_count(catarray)
     allocate( catlist(ncats), arealist(ncats) )
