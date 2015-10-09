@@ -109,16 +109,17 @@ contains
     integer u,i
     character(*) :: infile
     character(3) :: foo
+    character(256) :: row
 
     open (newunit=u, file=infile, status='old')
 
-    ! skip first line (should be a header)
-    read (u,*) foo
-
     i = 1
     do
-       read (u,*,end=5)  this%id(i),this%flux(i),this%zspecflag(i),this%zp(i),this%prob(i),this%fratio(i), &
-                         this%opticalid(i)
+       read (u,'(A)',end=5) row
+       if (iscomment(row))  cycle
+
+       read (row,*)  this%id(i),this%flux(i),this%zspecflag(i),this%zp(i), &
+            this%prob(i),this%fratio(i),this%opticalid(i)
 
        if (this%zp(i) <= 0) then
           write (*,*) 'redshift ',this%zp(i),' of source ',i,' is <=0'
@@ -412,13 +413,17 @@ contains
   subroutine catalogue_readprocessed (this,filename)
     class(catalogue) :: this
     character(*) :: filename
+    character(256) :: row
     integer i,u
 
     open (newunit=u, file=filename, status='old')
 
     i = 1
     do
-       read (u,*,end=555) this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i)
+       read (u,'(A)',end=555) row
+       if (iscomment(row))  cycle
+
+       read (row,*)  this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i)
        i = i+1
     end do
 
