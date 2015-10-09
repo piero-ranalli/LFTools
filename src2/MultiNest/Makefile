@@ -9,7 +9,9 @@ FFLAGS=-g $(INCLUDE) $(FFMULTINEST)
 FFMULTINEST=-I/usr/local/modules
 LDMULTINEST=-L/usr/local/lib64 -lmultinest_mpi
 
-CUBA=-lcuba
+# when set, CUBA make the integrals module use the CUBA library
+CUBA=
+#CUBA=-lcuba -L/usr/local/lib64 -DCUBA
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
