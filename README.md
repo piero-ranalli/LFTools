@@ -625,6 +625,39 @@ e.g. [the wikipedia article](http://en.wikipedia.org/wiki/JSON) or the
 
 
 
+How to add more evolution models
+--------------------------------
+
+Editing the code is required.
+
+1. In src2/lumf_funcs.f90, add a new evolution type by subclassing
+'evolution' (see how ldde, lade etc. work).  Non-power-law models can
+be added by subclassing z0function (see the doublepowerlaw
+class). Models that break the assumption that evolution can be broken
+into a luminosity-evolution part and a density-evolution part
+(e.g. the flexible double power-law by Aird et al. 2015) my require
+a complete rework of the class hierarchy.
+
+2. In src2/startup.f90, subroutine allocateLF, add a proper case to
+the if/elseif/endif sequence to allocate the newly defined class.
+
+3. In src2/ml-fit.f90, subroutine FCN, add a proper case to the select
+type statement. You need to pass to ev%set() the proper amount of
+parameters: start with xval(5) and increment up to what you need.
+
+4. In src2/Multinest/lfmnconfig.f90, subroutine configure, add a
+proper case to the if/elseif/endif sequence right after the 'set prior
+parameters' comment. The variable numparams is the total number of
+parameters (4 for the double powerlaw, plus what you need for
+evolution). End the block with a call to a new subroutine
+('set_yourevolution_params'). Write the latter subroutine, looking at
+the others as examples. The variable 'keyword' is the one which you
+will need to specify in the configuration .json file.
+
+5. Recompile, calling make both in src2/ and in src2/Multinest/.
+
+
+
 Companion programmes
 --------------------
 
