@@ -5,7 +5,7 @@
 #include "photoz.f90"
 #include "cosmology.f90"
 #include "curves.f90"
-#include "integrals.f90"
+#include "integrals.F90"
 #include "areas.f90"
 #include "catalogueio.f90"
 #include "lumf_funcs.f90"
