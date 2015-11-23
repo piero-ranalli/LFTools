@@ -1,7 +1,7 @@
 module lfmlconfig  ! configuration for lf-ml
 
   ! shortened version of lfmnconfig.f90
-
+  use precision
   use startup
   use fson
   use fson_value_m, only: fson_value_count, fson_value_get
@@ -11,10 +11,11 @@ module lfmlconfig  ! configuration for lf-ml
   character(len=256), private :: config,cat,area
   type(fson_value), pointer, private :: pars,catarray,catitem
   character(len=4), private :: evtype
-
+  real(kind=rkind), private :: zmin,zmax,lmin,lmax
+  
   ! public
   character(len=256) :: minuitcmd
-
+  logical :: do_nhcorr = .false.
   
 contains
 
@@ -32,9 +33,14 @@ contains
     call fson_get(pars,"evolution",evtype)
     call fson_get(pars,"catalogues",catarray)
     call fson_get(pars,"minuit",minuitcmd)
-
+    call fson_get(pars,"nhcorr",do_nhcorr)
+    call fson_get(pars,"limits.zmin",zmin)
+    call fson_get(pars,"limits.zmax",zmax)
+    call fson_get(pars,"limits.lmin",lmin)
+    call fson_get(pars,"limits.lmax",lmax)
+    
     ! allocate structures
-    call allocatelf(evtype)
+    call allocatelf(evtype,zmin,zmax,lmin,lmax)
 
     ! read catalogues
     ncats = fson_value_count(catarray)
@@ -48,6 +54,8 @@ contains
 
     call setlastcat(ncats)
 
+    if (do_nhcorr)  call start_umarginal
+        
   end subroutine configure
 
 

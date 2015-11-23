@@ -66,6 +66,10 @@ contains
     end select
 
     select type ( ev => like%evol )
+      class is (pdlevol)
+         !    set(etad, etal)
+         call ev%set(xval(5),xval(6))
+         
       class is (ladevol)
          !    set(zc, p1, p2, d)
          call ev%set(xval(5),xval(6),xval(7),xval(8))

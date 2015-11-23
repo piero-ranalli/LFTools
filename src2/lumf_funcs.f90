@@ -73,6 +73,21 @@ type, extends(z0function)  :: doublepowerlaw
 end type doublepowerlaw
 
 
+
+! no evolution: dummy class, needed only to answer 'select type' statements
+type, extends(evolution) :: noevol
+end type noevol
+
+
+! PLE+PDE = PDLE
+type, extends(evolution) :: pdlevol
+   real(kind=rkind) :: etad, etal
+ contains
+   procedure :: set => pdlevol_set
+   procedure :: calcl => pdlevol_calcl
+   procedure :: calcd => pdlevol_calcd
+end type pdlevol
+
 ! LDDE family
 type, extends(evolution) :: lddevol
    real(kind=rkind) :: zc, p1, p2, alfa, La
@@ -216,6 +231,34 @@ pure elemental function doublepowerlaw_calc (this,Lx)
 
 
 end function doublepowerlaw_calc
+
+
+
+! procedures for PLE & PDE
+subroutine pdlevol_set(this, detad, detal)
+  class(pdlevol) :: this
+  real(kind=rkind),intent(in) :: detal, detad
+
+  this%etad = detad
+  this%etal = detal
+end subroutine pdlevol_set
+
+
+pure elemental function pdlevol_calcd (this,Lx,z)  result (pde)
+  real(kind=rkind) :: pde
+  class(pdlevol),intent(in) :: this
+  real(kind=rkind),intent(in) :: Lx,z
+
+  pde = this%etad*log10(1+z)
+end function pdlevol_calcd
+
+pure elemental function pdlevol_calcl (this,Lx,z)  result (ple)
+  real(kind=rkind) :: ple
+  class(pdlevol),intent(in) :: this
+  real(kind=rkind),intent(in) :: Lx,z
+
+  ple = this%etal*log10(1+z)
+end function pdlevol_calcl
 
 
 

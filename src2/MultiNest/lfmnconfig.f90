@@ -1,5 +1,6 @@
 module lfmnconfig  ! configuration for lf-mn
 
+  use startup
   use fson
   use fson_value_m, only: fson_value_count, fson_value_get
   use params
@@ -12,6 +13,8 @@ module lfmnconfig  ! configuration for lf-mn
   character(len=11), private :: priortype
   character(len=15), private :: keyword
   real, allocatable, private :: priorarray(:)
+  real(kind=rkind), private  :: zmin,zmax,lmin,lmax
+  logical, private           :: do_nhcorr = .false.
   
 contains
 
@@ -31,10 +34,16 @@ contains
     call fson_get(pars,"evolution",evtype)
     call fson_get(pars,"priors",priortype)
     call fson_get(pars,"catalogues",catarray)
+    call fson_get(pars,"nhcorr",do_nhcorr)
+    call fson_get(pars,"limits.zmin",zmin)
+    call fson_get(pars,"limits.zmax",zmax)
+    call fson_get(pars,"limits.lmin",lmin)
+    call fson_get(pars,"limits.lmax",lmax)
 
     ! allocate structures
-    call allocatelf(evtype)
-
+    call allocatelf(evtype,zmin,zmax,lmin,lmax)
+    if (do_nhcorr)  call start_umarginal
+    
     ! read catalogues
     ncats = fson_value_count(catarray)
     do i=1, ncats
@@ -63,7 +72,21 @@ contains
     end if
 
     ! set prior parameters
-    if (evtype .eq. 'ldde') then
+    if (evtype .eq. 'noevol') then
+
+       numparams = 4
+       allocate (spriorpar(numparams,nprioritems))
+       prior%params => spriorpar
+       call setnoevolparams
+
+    else if (evtype .eq. 'pdle') then
+
+       numparams = 6
+       allocate (spriorpar(numparams,nprioritems))
+       prior%params => spriorpar
+       call setpdleparams
+
+    else if (evtype .eq. 'ldde') then
 
        numparams = 9
        allocate (spriorpar(numparams,nprioritems))
@@ -85,13 +108,65 @@ contains
        call setladeparams
 
     else
-       write (*,*) 'Unrecognized evolution type (use: "ldde", "ldde15", "lade", or "ladebpl").'
+       write (*,*) 'Unrecognized evolution type (use: "pdle","ldde", "ldde15", "lade", or "ladebpl").'
        write (*,*) 'You used: "',evtype,'"'
        stop
     end if
 
 
   end subroutine configure
+
+
+
+  subroutine setnoevolparams
+    if (trim(priortype) .eq. 'flat') then
+       keyword = "noevollimits"
+    else
+       keyword = "noevolcauchygamma"
+    end if
+
+    call fson_get(pars,trim(keyword)//".A",priorarray)
+    call checkn
+    spriorpar(1,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".gamma1",priorarray)
+    call checkn
+    spriorpar(2,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".gamma2",priorarray)
+    call checkn
+    spriorpar(3,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".Lstar",priorarray)
+    call checkn
+    spriorpar(4,:) = priorarray(:)
+  end subroutine setnoevolparams
+
+
+
+    subroutine setpdleparams
+    if (trim(priortype) .eq. 'flat') then
+       keyword = "pdlelimits"
+    else
+       keyword = "pdlecauchygamma"
+    end if
+
+    call fson_get(pars,trim(keyword)//".A",priorarray)
+    call checkn
+    spriorpar(1,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".gamma1",priorarray)
+    call checkn
+    spriorpar(2,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".gamma2",priorarray)
+    call checkn
+    spriorpar(3,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".Lstar",priorarray)
+    call checkn
+    spriorpar(4,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".etad",priorarray)
+    call checkn
+    spriorpar(5,:) = priorarray(:)
+    call fson_get(pars,trim(keyword)//".etal",priorarray)
+    call checkn
+    spriorpar(6,:) = priorarray(:)
+  end subroutine setpdleparams
 
 
 

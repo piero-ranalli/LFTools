@@ -19,8 +19,9 @@ real(kind=rkind), allocatable :: scaledparams(:)
 
 contains
 
-  subroutine allocateLF(ev)
+  subroutine allocateLF(ev,zmin,zmax,lmin,lmax)
     character*(*) :: ev
+    real(kind=rkind) :: zmin,zmax,lmin,lmax
     
     allocate(doublepowerlaw::like%z0func)
 
@@ -32,10 +33,19 @@ contains
        allocate(lddevol::like%evol)
     else if (ev .eq. 'ldde15') then
        allocate(ldde15evol::like%evol)
+    else if (ev .eq. 'pdle') then
+       allocate(pdlevol::like%evol)
+    else if (ev .eq. 'noevol') then
+       allocate(noevol::like%evol)
     else
        write (*,*) 'Unrecognized evolution type.'
        stop
     end if
+
+    like%zmin = zmin
+    like%zmax = zmax
+    like%lmin = lmin
+    like%lmax = lmax
     
     call setcosmology(70.d0,.3d0,.7d0)
   end subroutine allocateLF
@@ -43,16 +53,9 @@ contains
     
 
   
-  subroutine readcatalogue(i,catfile,areafile)
-    integer :: i
-    character*(*) :: catfile,areafile
-
-  !like%z0func => dp
-  !like%evol => ldde
-  !like%evol => lade
-
-  !write (*,*) 'setting lock...'
-  !call set_lock_or_die
+subroutine readcatalogue(i,catfile,areafile)
+  integer :: i
+  character*(*) :: catfile,areafile
 
   write (*,*) 'reading catalogue and area: ',trim(catfile),' ',trim(areafile)
   call like%cat(i)%readcat(catfile)
@@ -68,13 +71,15 @@ subroutine setlastcat(i)
   write (*,*) i,' catalogues read.'
   like%lastcat = i
   
-  write (*,*) 'setting up U marginal probabilities...'
-  call like%setup_umarginal
-
-  !call release_lock
   write (*,*) 'done.'
 end subroutine setlastcat
 
+
+subroutine start_umarginal
+  write (*,*) 'setting up U marginal probabilities...'
+  like%do_nhcorr = .true.
+  call like%setup_umarginal
+end subroutine start_umarginal
 
 
 end module startup

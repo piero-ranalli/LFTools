@@ -30,8 +30,10 @@ implicit none
 type, extends(luminosityfunction) :: lf_with_likelihood
    integer :: lastcat          ! number of catalogues
    type(catalogue), dimension(10) :: cat
-
+   real(kind=rkind) :: zmin,zmax,lmin,lmax
+   
    ! U marginal probabilities
+   logical :: do_nhcorr = .false.
    integer :: usize
    real(kind=rkind), dimension(:), pointer :: problogU
  contains
@@ -74,7 +76,7 @@ function one_catalogue_likelihood(this,ic)   result(S)
 
   !real, parameter :: zmin = .001, zmax = 1.5, lmin=41., lmax=45.5
   ! these should match the catalogue!
-  real(kind=rkind), parameter :: zmin = .0001, zmax = 4., lmin=41., lmax=46.
+  !real(kind=rkind), parameter :: zmin = .0001, zmax = 4., lmin=41., lmax=46.
   real(kind=rkind) :: lf,partialsum
 
   real(kind=rkind), allocatable :: weightedlf(:)  !(size(this%cat%Lx))
@@ -122,8 +124,8 @@ function one_catalogue_likelihood(this,ic)   result(S)
 
   ! integral over L  (over z is done inside integrandz)
   ! (as in the code for Page-Carrera method: pageca_dev.f / lumfunc.f)
-  !S = S + integrate(integrandL,lmin,lmax)/3283.d0
-  S = S + integrate_cuhre_2d(integrandz,zmin,zmax,lmin,lmax)/3283.d0
+  S = S + integrate(integrandL,this%lmin,this%lmax)/3283.d0
+  !S = S + integrate_cuhre_2d(integrandz,zmin,zmax,lmin,lmax)/3283.d0
 
   ! multiply by 2 so that uncertainty estimates are in the same scale of those
   ! obtained with the chi**2
@@ -142,7 +144,7 @@ contains
     real(kind=rkind),intent(in) :: Lx
     !real, external :: integrandL
 
-    integrandL = integrate(integrandz,zmin,zmax,Lx)
+    integrandL = integrate(integrandz,this%zmin,this%zmax,Lx)
 
   end function integrandL
 
@@ -159,14 +161,17 @@ contains
                  !  log10(4*pi)    log10(3.086e24**2)
     finteg = Lx -1.09920977366969d0 -48.978791843454259d0 - 2.*log10( lumd(z) )
 
-    ! average area over all possible observed fluxes
-    call point_to_umarginal( umarg, z )
-    area = 0.d0
-    do i=1, this%usize
-       tmp = this%cat(catno)%coverage(finteg - this%problogU(i))
-       area = area + umarg(i) * tmp
-    end do
-
+    if (this%do_nhcorr) then
+       ! average area over all possible observed fluxes
+       call point_to_umarginal( umarg, z )
+       area = 0.d0
+       do i=1, this%usize
+          tmp = this%cat(catno)%coverage(finteg - this%problogU(i))
+          area = area + umarg(i) * tmp
+       end do
+    else
+       area = this%cat(catno)%coverage(finteg)
+    end if
 
     !area = area/3283.d0 ! this can be safely moved out of the integration loop
 
