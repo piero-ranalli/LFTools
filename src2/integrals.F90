@@ -119,6 +119,9 @@ recursive function integrate_trapezoidal2 (f, from, to, param) result (integral)
 end function integrate_trapezoidal2
 
 
+
+#ifdef CUBA
+
 function integrate_cuhre_2d (f, from1, to1, from2, to2) result (res)
   ! integrate using CUBA
   procedure(integrand) :: f
@@ -186,6 +189,7 @@ end function scaledintegrand
   
 end function integrate_cuhre_2d
 
+#endif
 
 
 

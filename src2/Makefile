@@ -42,12 +42,12 @@ include Makefile.depend
 
 
 
+%.mod %.o: %.F90
+	$(FC)  $(FFLAGS) -c $<
 
 %.mod %.o: %.f90
 	$(FC)  $(FFLAGS) -c $<
 
-%.mod %.o: %.F90
-	$(FC)  $(FFLAGS) -c $<
 
 
 
