@@ -159,7 +159,8 @@ again XMM-COSMOS as an example:
 
     ./lf-catcorrect --infile=xmmcosmos-formatted-cat.dat
                    --outfile=xmmcosmos-corrected-cat.dat
-                   --nhcorr=T --photozpdf=T
+                   --nhcorr=T  --savenhcorr
+                   --photozpdf=T
                    --pdfstart=63 --pdfstop=713
                    --pdfpath=/home/piero/Dati/Teoria/XMMLSS/SPEC_files_cosmos/
                    --kcorrgamma=1.7
@@ -170,13 +171,17 @@ In this example we have specified all possible options:
 
   * input and output files (infile, outfile);
   * corrections for absorption (nhprob);
+  * save the applied absorption corrections as a further column in outfile;
   * corrections for photoz uncertainties (photozpdf);
   * photoz files are in .../SPEC_files_cosmos;
   * photoz information starts at line 63 and goes on to line 713;
   * K-corrections assume a power-law spectrum with Gamma=1.7;
   * completeness corrections (complcorr, corrfile).
 
-To turn off corrections, use --nhprob=F and/or --photozpdf=F.
+To turn off corrections, use --nhprob=F and/or --photozpdf=F and/or --complcorr=F
+(but corrections are anyway off by default).
+
+The only mandatory options are infile and outfile.
 
 The output catalogue file will have many more records and a different
 structure with respect to the input catalogue, so be aware that the
@@ -189,6 +194,7 @@ following:
   3. weight
   4. redshift
   5. luminosity
+ [6. optional: applied correction for absorption, in Log-scale]
 
 In fact, what `lf-catcorrect` does is to split each source into all
 the possible values of luminosity and redshift that it could have,

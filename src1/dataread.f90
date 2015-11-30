@@ -37,7 +37,7 @@ real, private :: gamma
 
 type catalogue
    real, dimension(:), allocatable :: flux,zp,prob,hr,fratio,ra,dec, &  ! read from file
-                                      weight,lum,weightcopy  ! assigned later
+                                      weight,lum,weightcopy,abscorr  ! assigned later
    integer, dimension(:), allocatable :: id,opticalid,zspecflag
    integer :: last, size
    !logical :: correct4likelihood = .false.
@@ -82,8 +82,10 @@ contains
     integer, intent(in) :: size
     integer :: status
 
-    allocate( this%flux(size),this%zp(size),this%prob(size),this%hr(size),this%fratio(size),this%ra(size),this%dec(size), &
-              this%weight(size),this%lum(size), this%id(size), this%opticalid(size),this%zspecflag(size), &
+    allocate( this%flux(size),this%zp(size),this%prob(size),this%hr(size), &
+              this%fratio(size),this%ra(size),this%dec(size), &
+              this%weight(size),this%lum(size), this%id(size), this%opticalid(size), &
+              this%zspecflag(size), this%abscorr(size), &
               STAT = status )
 
     if (status /= 0)   stop  "Not enough memory to allocate all arrays"
@@ -95,7 +97,7 @@ contains
     class(catalogue) :: this
 
     deallocate( this%flux,this%zp,this%prob,this%hr,this%fratio,this%ra,this%dec, &
-         this%weight,this%lum, this%id, this%opticalid,this%zspecflag )
+         this%weight,this%lum, this%id, this%opticalid,this%zspecflag, this%abscorr )
   end subroutine catalogue_deallocate
 
   subroutine catalogue_reset (this)
@@ -352,6 +354,7 @@ contains
                 corrprob = this%probmatrix(j,row,page)
                 if (corrprob>0) then
                    corr = this%problogU(j)
+                   this%abscorr(i) = corr
                    !write (*,*) corr, corrprob
                    call this%copycat(i,catcorr,corrprob,corr)
                 endif
@@ -389,20 +392,27 @@ contains
     that%lum(that%last)    = this%lum(i)    + lumcorr
     that%zspecflag(that%last) = this%zspecflag(i)
     that%opticalid(that%last) = this%opticalid(i)
+    that%abscorr(that%last) = this%abscorr(i)
 
 
   end subroutine catalogue_copycat
 
-  subroutine catalogue_writelnls (this,filename)
+  subroutine catalogue_writelnls (this,filename,saveabscorr)
     class(catalogue) :: this
     character(*) :: filename
+    logical :: saveabscorr
     integer i,u
 
     open (newunit=u, file=filename, status='new')
 
     do i = 1, this%last
        if (this%weight(i)<1.e-20) cycle
-       write (u,*) this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i)
+       if (saveabscorr) then
+          write (u,*) this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i), &
+               this%abscorr(i)
+       else
+          write (u,*) this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i)
+       end if
     end do
 
     close (unit=u)

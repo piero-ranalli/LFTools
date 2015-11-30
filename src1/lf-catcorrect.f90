@@ -123,7 +123,7 @@ end if
 
 
 ! write catalogue
-call cat%writelnls(outfile)
+call cat%writelnls(outfile,save_abs_corr)
 
 
 

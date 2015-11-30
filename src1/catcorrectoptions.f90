@@ -10,6 +10,7 @@ module catcorrectoptions
   character*256 infile, outfile, completenessfile
   logical do_nhcorr, do_photozpdf, do_range, do_compl
   logical in_cmd_line, do_selectprob
+  logical save_abs_corr
   real :: myH0, myOM, myOL
   integer pdfstart,pdfstop
   character (len=photozpathlen) :: pdfpath
@@ -28,7 +29,7 @@ contains
     ! read command line parameters
     call set_parser_options ( with_equal_sign = .true. )
 
-    allocate( program_options(14) )
+    allocate( program_options(15) )
 
     call set_option ( program_options , "--infile" , "" , 'inputcatalogue.dat'  &
          , "Input catalogue" )
@@ -56,8 +57,10 @@ contains
          , "Omega_Matter" )
     call set_option ( program_options , "--complcorr" , "" , .false.   &
          , "Completeness correction" )
-    call set_option ( program_options , "--corrfile" , "" , 'completeness.dat'   &
+    call set_option ( program_options , "--complcorrfile" , "" , 'completeness.dat'   &
          , "Completeness correction file" )
+    call set_option ( program_options , "--savenhcorr" , "" , .false.   &
+         , "Save applied absorption corrections" )
     
 
     ! check that option keys are not set double
@@ -101,9 +104,10 @@ contains
          myOL , in_cmd_line )
     call get_option_value ( program_options , "--complcorr" ,         &
          do_compl , in_cmd_line )
-    call get_option_value ( program_options , "--corrfile" ,         &
+    call get_option_value ( program_options , "--complcorrfile" ,         &
          completenessfile , in_cmd_line )
-
+    call get_option_value ( program_options , "--savenhcorr" ,         &
+         save_abs_corr , in_cmd_line )
 
     !      write (*,*) do_nhcorr,do_fluxcorr,do_areacorr,do_photozpdf,
     !     $    do_selectprob,do_cdfs,do_lss,do_cosmos
