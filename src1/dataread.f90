@@ -126,6 +126,12 @@ contains
        if (this%zp(i) <= 0) then
           write (*,*) 'redshift ',this%zp(i),' of source ',i,' is <=0'
        end if
+
+       ! if there is no optical id (i.e. it is <0), treat the
+       ! source as a spec-z
+       if (this%opticalid(i)<0) then
+          this%zspecflag(i) = 1
+       end if
        
        this%weight(i) = 1.
        i = i+1
