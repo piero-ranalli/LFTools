@@ -69,7 +69,7 @@ fasttest:
 	gfortran -mtune=native  -O3 -fomit-frame-pointer -fstrict-aliasing  -momit-leaf-frame-pointer -fno-tree-pre -falign-loops -o mlt ml-test.f90 catalogueIO.f90 integrals.F90 cosmology.f90 lumf_funcs.f90 ml.f90 areas.f90 curves.f90 binarysearch.f90 $(CERNLIB)
 
 lf-ml: ml-fit.f90 $(MOD) unit.o $(LIB_FSON)/libfson.so 
-	gfortran $(FAST)  -o lf-ml ml-fit.f90 unit.o $(CUBA) $(LIB_FSON)/libfson.so $(CERNLIB)
+	gfortran $(FAST)  -o lf-ml ml-fit.f90 unit.o $(CUBA) -L$(LIB_FSON) -lfson $(CERNLIB)
 	cp lf-ml $(BIN)
 
 .PHONY: unit

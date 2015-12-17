@@ -47,12 +47,12 @@ test: $(OBJ) $(MOD)
 	$(FC) $(INCLUDE)  -o test $(OBJ) ../unit.o $(LIB_FSON)/libfson.so $(LDMULTINEST) $(CUBA)
 
 lf-validate: $(OBJ) $(MOD) $(VALIDATEOBJ) $(VALIDATEMOD) mnunit.o m_option_parser.o
-	$(FC) $(FAST) -o lf-validate $(VALIDATEOBJ) ../unit.o $(LIB_FSON)/libfson.so $(CUBA) $(INCLUDE)
+	$(FC) $(FAST) -o lf-validate $(VALIDATEOBJ) ../unit.o -L$(LIB_FSON) -lfson $(CUBA) $(INCLUDE)
 	cp lf-validate $(BIN)
 
 
 lf-mn: $(OBJ) $(MOD) mnunit.o
-	$(FC) $(FAST) -o lf-mn main.o mnunit.o ../unit.o $(LIB_FSON)/libfson.so $(CUBA) $(LDMULTINEST) $(INCLUDE)
+	$(FC) $(FAST) -o lf-mn main.o mnunit.o ../unit.o -L$(LIB_FSON) -lfson $(CUBA) $(LDMULTINEST) $(INCLUDE)
 	cp lf-mn $(BIN)
 
 zeus: $(OBJ) $(MOD) mnzeus.o

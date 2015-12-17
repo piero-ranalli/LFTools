@@ -7,7 +7,7 @@ areas.o areas.mod: areas.f90 precision.mod curves.mod fileutils.mod \
  fileutils.mod
 u_marginal.o u_marginal.mod: u_marginal.f90 precision.mod \
  binarysearch.mod
-integrals.o integrals.mod: integrals.f90 precision.mod
+integrals.o integrals.mod: integrals.F90 precision.mod
 lumf_funcs.o lumf_funcs.mod: lumf_funcs.f90 precision.mod
 photoz.o photoz.mod: photoz.f90 precision.mod
 ml.o ml.mod: ml.f90 precision.mod integrals.mod lumf_funcs.mod \
