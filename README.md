@@ -206,10 +206,11 @@ Binned luminosity functions
 ---------------------------
 
 The programme `lf-binned` computes non-parametric, binned estimates of
-the LF, using the method described in Ranalli et al. (2015, in prep.),
-which is a variant of the method by Page & Carrera (2000, MNRAS 311,
-433). Both methods have their root in the 1/V<sub>max</sub> method
-(Schmidt 1968, ApJ 151, 393).
+the LF, using the method described in [Ranalli et
+al. 2015](http://arxiv.org/abs/1512.05563) which is a variant of the
+method by Page & Carrera (2000, MNRAS 311, 433). Both methods have
+their root in the 1/V<sub>max</sub> method (Schmidt 1968, ApJ 151,
+393).
 
 As the input for this programme, you need at least a corrected
 catalogue produced by `lf-catcorrect`, and an area file. This should
@@ -267,8 +268,9 @@ currently the most favoured ones are:
 
 An in-depth description of these models, their parameters, and their
 astrophysical meaning is beyond the scope of this document. More
-information can be found in Ranalli et al. (2015, in prep.) or in
-other literature papers (e.g. Aird et al. 2010, ...).
+information can be found in [Ranalli et
+al. 2015](http://arxiv.org/abs/1512.05563) or in other literature
+papers (e.g. Aird et al. 2010, ...).
 
 
 LFtools currently implements the following models:
@@ -280,7 +282,7 @@ LFtools currently implements the following models:
 We note that LADE here uses a different normalisation than what used
 by Aird et al. (2010). Our normalisation is such that density
 evolution is zero at z=0, as in Fotopoulou et al. (submitted). For
-more information, see Ranalli et al. (2015, in prep.).
+more information, see [Ranalli et al. 2015](http://arxiv.org/abs/1512.05563).
 
 LADEBPL is a variant on LADE: instead of using the double powerlaw as
 in Aird et al. (2010), it uses a broken poweraw as in Ueda et
@@ -607,7 +609,7 @@ The example above includes:
     `lf-mn`);
   * the choice of evolution (ldde or lade);
   * a flag (nhcorr) to specify that absorption corrections should be
-    considered when computing the coverage (see Ranalli et al. 2015;
+    considered when computing the coverage (see [Ranalli et al. 2015](http://arxiv.org/abs/1512.05563)
     nhcorr=0 means using Eq.(6), nhcorr=1 means using Eq.(9);
   * a list of catalogues and area files. Note the use of square
     brackets to contain the list, and of braces to contain the
