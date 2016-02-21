@@ -10,7 +10,7 @@ module lfmlconfig  ! configuration for lf-ml
   integer, private :: i, ncats
   character(len=256), private :: config,cat,area
   type(fson_value), pointer, private :: pars,catarray,catitem
-  character(len=4), private :: evtype
+  character(len=6), private :: evtype
   real(kind=rkind), private :: zmin,zmax,lmin,lmax
   
   ! public
