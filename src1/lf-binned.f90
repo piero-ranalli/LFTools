@@ -110,8 +110,10 @@ do
 
    ncoggetti = cat%wcount()
 
-   noggetti = int(ncoggetti)
+   noggetti = nint(ncoggetti)  ! round to nearest integer
 
+   ! the gehrels tables should probably be interpolated and ncoggetti should be used
+   ! here; for the moment let's just use the closest integer
    write (*,*) noggetti, ' objects in the bin'
    if (noggetti.le.50) then
       write (*,*) '1sigma interval: ',gehrelsl(noggetti), gehrelsh(noggetti)
@@ -152,7 +154,7 @@ do
 3434 format (1X,F4.1,1X,F4.1,1X,F5.3,1X,F5.3,1X,F7.3,1X,F7.3,1X,F7.3,1X,F6.1,1X,1A)
 
    write (*,3434) llmin,llmax,zmin,zmax,     &
-        log10(real(noggetti)/intel),         &
+        log10(ncoggetti/intel),              &
         log10((gehrelsl(noggetti))/intel),   &
         log10((gehrelsh(noggetti))/intel),   &
         ncoggetti, '%'
