@@ -69,7 +69,6 @@ type, extends(z0function)  :: doublepowerlaw
  contains
    procedure :: set  => doublepowerlaw_set
    procedure :: calc => doublepowerlaw_calc
-   !procedure :: priorprob => doublepowerlaw_calc_priorprob
 end type doublepowerlaw
 
 
@@ -94,7 +93,6 @@ type, extends(evolution) :: lddevol
  contains
    procedure :: set  => lddevol_set
    procedure :: calcd => lddevol_calcd
-   !procedure :: priorprob => lddevol_calc_priorprob
 end type lddevol
 
 type, extends(evolution) :: ldde15evol  ! Ueda et al. 2015
@@ -112,7 +110,6 @@ type, extends(evolution) :: ladevol
    procedure :: set  => ladevol_set
    procedure :: calcl => ladevol_calcl
    procedure :: calcd => ladevol_calcd
-   !procedure :: priorprob => ladevol_calc_priorprob
 end type ladevol
 
 type, extends(ladevol) :: ladevol_ueda
@@ -382,91 +379,6 @@ end function ladevol_calcd
 
 
 
-! Bayesian priors (not used at the moment)
-
-! real(kind=rkind) function doublepowerlaw_calc_priorprob(this) result(prob)
-!   class(doublepowerlaw) :: this
-!   real(kind=rkind), save :: rmin(4),rmax(4),rnorm(4)
-!   logical, save :: has_norm = .false.
-!   data rmin/  .1, -3., -3., 41./
-!   data rmax/12. ,  5.,  5., 47./
-
-!   ! calculate norm for the first time
-!   if (.not. has_norm) then
-!      call calc_norm(rmin,rmax,rnorm)
-!      has_norm = .true.
-!   endif
-
-!   ! uniform probability if parameters are in range
-!   prob = unif_in_range( [this%A,this%gamma1,this%gamma2,this%Lstar], &
-!                         rmin, rmax, rnorm )
-! end function doublepowerlaw_calc_priorprob
-
-
-! real(kind=rkind) function ladevol_calc_priorprob(this) result(prob)
-!   class(ladevol) :: this
-!   real(kind=rkind), save :: rmin(4),rmax(4),rnorm(4)
-!   logical, save :: has_norm = .false.
-!   data rmin/ .01, -10., -10., -1./
-!   data rmax/5.  ,  10.,  10.,  5./
-
-!   ! calculate norm for the first time
-!   if (.not. has_norm) then
-!      call calc_norm(rmin,rmax,rnorm)
-!      has_norm = .true.
-!   endif
-
-!   ! uniform probability if parameters are in range
-!   prob = unif_in_range( [this%zc,this%p1,this%p2,this%d], &
-!                         rmin, rmax, rnorm )
-! end function ladevol_calc_priorprob
-
-
-! real(kind=rkind) function lddevol_calc_priorprob(this) result(prob)
-!   class(lddevol) :: this
-!   real(kind=rkind), save :: rmin(5),rmax(5),rnorm(5)
-!   logical, save :: has_norm = .false.
-!   data rmin/ .01, -10., -10., -1., 41./
-!   data rmax/5.  ,  10.,  10.,  3., 47./
-
-!   ! calculate norm for the first time
-!   if (.not. has_norm) then
-!      call calc_norm(rmin,rmax,rnorm)
-!      has_norm = .true.
-!   endif
-
-!   ! uniform probability if parameters are in range
-!   prob = unif_in_range( [this%zc,this%p1,this%p2,this%alfa, this%La], &
-!                         rmin, rmax, rnorm )
-! end function lddevol_calc_priorprob
-
-
-
-! ! these are module procedures needed for Bayesian priors
-
-! subroutine calc_norm (rmin,rmax,norm)
-!   ! NB calculate LOG probability
-!   real(kind=rkind), intent(in) :: rmin(:),rmax(:)
-!   real(kind=rkind), intent(inout) :: norm(:)
-
-!   norm = log(1. / (rmax-rmin))
-! end subroutine calc_norm
-
-
-! real(kind=rkind) function unif_in_range( xval, min, max, norm )  result(prob)
-!   real(kind=rkind), dimension(:) :: xval, min, max, norm
-!   integer i
-
-!   prob = 0
-
-!   do i=1,size(xval)
-!      if (xval(i).ge.min(i) .and. xval(i).le.max(i)) then
-!         prob = prob + norm(i)
-!      else
-!         prob = -99
-!      endif
-!   enddo
-! end function unif_in_range
 
 
 end module lumf_funcs
