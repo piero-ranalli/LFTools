@@ -262,7 +262,7 @@ contains
   real function catalogue_wcount(this)   result(tot)
     class(catalogue), intent(in) :: this
 
-    tot = sum(this%weight)
+    tot = sum(this%weight * this%prob)
   end function catalogue_wcount
 
 
@@ -415,9 +415,10 @@ contains
        if (this%weight(i)<1.e-20) cycle
        if (saveabscorr) then
           write (u,*) this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i), &
-               this%abscorr(i)
+               this%prob(i), this%abscorr(i)
        else
-          write (u,*) this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i)
+          write (u,*) this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i), &
+               this%prob(i)
        end if
     end do
 
@@ -439,7 +440,8 @@ contains
        read (u,'(A)',end=555) row
        if (iscomment(row))  cycle
 
-       read (row,*)  this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i)
+       read (row,*)  this%id(i), this%flux(i), this%weight(i), this%zp(i), this%lum(i), &
+            this%prob(i)
        i = i+1
     end do
 

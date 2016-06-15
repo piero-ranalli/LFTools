@@ -194,7 +194,8 @@ following:
   3. weight
   4. redshift
   5. luminosity
- [6. optional: applied correction for absorption, in Log-scale]
+  6. match probability
+ [7. optional: applied correction for absorption, in Log-scale]
 
 In fact, what `lf-catcorrect` does is to split each source into all
 the possible values of luminosity and redshift that it could have,

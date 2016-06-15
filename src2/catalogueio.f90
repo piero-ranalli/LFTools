@@ -5,10 +5,17 @@ use photoz
 
 integer, parameter :: maxcatsize = 1300000
 
+!> the 'catalogue' type contains the following vectors:
+!! id = identification number
+!! Lx = luminosity
+!! z  = redshit
+!! weight = probability of the id source having Lx and z
+!! includeprob = probability for the inclusion of the source in the catalogue, it is the
+!!               match probability used in lf-catcorrect and lf-binned
 type catalogue
    integer :: size
    integer,dimension(:),allocatable :: id
-   real(kind=rkind),   dimension(:), allocatable :: Lx, z, weight
+   real(kind=rkind),   dimension(:), allocatable :: Lx, z, weight, includeprob
    type(coverage) :: area
  contains
    procedure :: coverage => catcoverage
@@ -48,7 +55,8 @@ subroutine readcat (this, filename)
   catsize = lines_in_file( filename, .true. )
   
   allocate( this%id(catsize), this%Lx(catsize),       &
-            this%z(catsize),  this%weight(catsize) )
+            this%z(catsize),  this%weight(catsize),   &
+            this%includeprob(catsize)                   )
 
   write (*,*) catsize
   open (newunit=u, file=filename, status='old')
@@ -64,7 +72,7 @@ subroutine readcat (this, filename)
         stop
      end if
 
-     read (row,*) this%id(i), foo, this%weight(i), this%z(i), this%Lx(i)
+     read (row,*) this%id(i), foo, this%weight(i), this%z(i), this%Lx(i), this%includeprob(i)
 
      if (this%Lx(i) > 48) then
         write (*,*) 'error at line ',i
@@ -88,7 +96,7 @@ subroutine write (this)
 
   open (newunit=u, file='catalogue-rebin.dat', status='new')
   do i=1,this%size
-     write (u,*) this%id(i), 0, this%weight(i), this%z(i), this%Lx(i)
+     write (u,*) this%id(i), 0, this%weight(i), this%z(i), this%Lx(i), this%includeprob(i)
   end do
 end subroutine write
 

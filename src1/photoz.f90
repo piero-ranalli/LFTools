@@ -62,10 +62,17 @@ contains
 
     character(9) :: cid,foo
 
+    if (id >= 1e10) then
+       write (*,*) 'optical id too large: id=',id
+       stop
+    end if
+    
 
 1   format (I9.9)
     write (cid,1) id
 
+    write (*,*) 'opening id=',cid
+    
     open (newunit=u, file=trim(this%path)//'Id'//cid//'.spec', status='old')
 
     do i=1,this%skip

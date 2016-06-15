@@ -113,7 +113,15 @@ function one_catalogue_likelihood(this,ic)   result(S)
         ! avoid taking log(0)
         if (partialsum < 1.e-35)  partialsum=1.e-35
 
-        S = S - log( partialsum )
+        ! account for inclusion probability ('match probability')
+        ! for simplicity, we consider a single value for each source
+        ! so we can just use includeprob(i)
+        ! (lf-binned is slightly more general and in principle allows different
+        !  includeprob for the same source, say if you have a parameter-dependent
+        !  includeprob)
+        ! NB this modification to the likelihood is not in Ranalli et al. 2016
+        ! but will likely appear in Akylas et al. 2016
+        S = S - this%cat(ic)%includeprob(i) * log( partialsum )
 
         partialsum = 0.
 
