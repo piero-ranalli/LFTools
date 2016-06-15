@@ -29,14 +29,12 @@ type :: evolution
  contains
    procedure :: calcl => dummy_evol_calcl
    procedure :: calcd => dummy_evol_calcd
-   procedure :: priorprob => dummy_evol_priorprob
 end type evolution
 
 ! base z=0 LF type, defining an interface for its calculation
 type, abstract :: z0function
  contains
    procedure :: calc => dummy_z0function_calc
-   procedure :: priorprob => dummy_z0function_priorprob
 end type z0function
 ! type, abstract :: z0function
 !  contains
@@ -159,17 +157,6 @@ pure elemental function dummy_z0function_calc (this,Lx)
   dummy_z0function_calc = 0
 end function dummy_z0function_calc
 
-function dummy_evol_priorprob (this)
-  real(kind=rkind) :: dummy_evol_priorprob
-  class(evolution) :: this
-  dummy_evol_priorprob = 0  ! log(1)
-end function dummy_evol_priorprob
-
-function dummy_z0function_priorprob (this)
-  real(kind=rkind) :: dummy_z0function_priorprob
-  class(z0function) :: this
-  dummy_z0function_priorprob = 0  ! log(1)
-end function dummy_z0function_priorprob
 
 ! generic luminosity function calculation, covering common cases
 ! (PLE,PDE,LADE,LDDE,ILDE,...)
