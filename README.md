@@ -644,7 +644,7 @@ Editing the code is required.
 be added by subclassing z0function (see the doublepowerlaw
 class). Models that break the assumption that evolution can be broken
 into a luminosity-evolution part and a density-evolution part
-(e.g. the flexible double power-law by Aird et al. 2015) my require
+(e.g. the flexible double power-law by Aird et al. 2015) may require
 a complete rework of the class hierarchy.
 
 2. In src2/startup.f90, subroutine allocateLF, add a proper case to
@@ -662,6 +662,10 @@ evolution). End the block with a call to a new subroutine
 ('set_yourevolution_params'). Write the latter subroutine, looking at
 the others as examples. The variable 'keyword' is the one which you
 will need to specify in the configuration .json file.
+
+5. In src2/Multinest/mn_glue.f90, subroutine calclikelihood, add a
+proper case to the select types, to pass the parameters from MultiNest
+to the luminosity function code.
 
 5. Recompile, calling make both in src2/ and in src2/Multinest/.
 
