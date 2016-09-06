@@ -107,11 +107,18 @@ The input catalogue should be an ASCII table with the following columns:
  5. match probability (use 1 if you are uncertain)
  6. 0.5-2 / 2-10 keV flux ratio
  7. optical ID number
+ 8. intrinsic flux (optional; see below)
 
 Comment lines are recognised if they start with a hash symbol (#).
 Optical ID numbers will be used to locate the file containing the
 photometric redshift probability distribution (one file per source in
 the catalogue).
+
+The column "intrinsic flux" can be used if you want to experiment with
+your own method for correcting absorption. In that case, fill this
+column, and when calling lf-catcorrect disable the programme's absorption
+correction and signal that you are providing your own by using the
+options: --nhprob=F --intrinsicflux=T .
 
 An example of how to prepare the catalogue can be found in
 `src1/convert-cosmos.f90`; this programme reads the XMM-COSMOS catalogue,
@@ -166,6 +173,7 @@ again XMM-COSMOS as an example:
                    --kcorrgamma=1.7
 		   --complcorr=T
 		   --corrfile=xmmcosmos-fluxhisto.dat
+		   --intrinsicflux=F
 
 In this example we have specified all possible options:
 
@@ -176,10 +184,17 @@ In this example we have specified all possible options:
   * photoz files are in .../SPEC_files_cosmos;
   * photoz information starts at line 63 and goes on to line 713;
   * K-corrections assume a power-law spectrum with Gamma=1.7;
-  * completeness corrections (complcorr, corrfile).
+  * completeness corrections (complcorr, corrfile);
+  * use of user-provided intrinsic fluxes (disabled by default, and in the example).
 
-To turn off corrections, use --nhprob=F and/or --photozpdf=F and/or --complcorr=F
-(but corrections are anyway off by default).
+To turn off corrections, use --nhprob=F and/or --photozpdf=F and/or
+--complcorr=F (but corrections are anyway off by default).
+
+Completeness corrections are considered experimental, and their use is
+discouraged, hence it is not documented. If you need to correct for
+incompleteness, a better way is to modify the survey coverage to
+reflect this. See e.g. how the XMM-LSS area is treated in Ranalli et
+al. 2016.
 
 The only mandatory options are infile and outfile.
 

@@ -10,7 +10,7 @@ module catcorrectoptions
   character*256 infile, outfile, completenessfile
   logical do_nhcorr, do_photozpdf, do_range, do_compl
   logical in_cmd_line, do_selectprob
-  logical save_abs_corr
+  logical save_abs_corr, intrinsicflux
   real :: myH0, myOM, myOL
   integer pdfstart,pdfstop
   character (len=photozpathlen) :: pdfpath
@@ -29,7 +29,7 @@ contains
     ! read command line parameters
     call set_parser_options ( with_equal_sign = .true. )
 
-    allocate( program_options(15) )
+    allocate( program_options(16) )
 
     call set_option ( program_options , "--infile" , "" , 'inputcatalogue.dat'  &
          , "Input catalogue" )
@@ -61,6 +61,8 @@ contains
          , "Completeness correction file" )
     call set_option ( program_options , "--savenhcorr" , "" , .false.   &
          , "Save applied absorption corrections" )
+    call set_option ( program_options , "--intrinsicflux" , "" , .false.   &
+         , "Use user-provided intrinsic fluxes" )
     
 
     ! check that option keys are not set double
@@ -108,6 +110,8 @@ contains
          completenessfile , in_cmd_line )
     call get_option_value ( program_options , "--savenhcorr" ,         &
          save_abs_corr , in_cmd_line )
+    call get_option_value ( program_options , "--intrinsicflux" ,         &
+         intrinsicflux , in_cmd_line )
 
     !      write (*,*) do_nhcorr,do_fluxcorr,do_areacorr,do_photozpdf,
     !     $    do_selectprob,do_cdfs,do_lss,do_cosmos

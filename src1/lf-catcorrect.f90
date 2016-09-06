@@ -3,7 +3,7 @@ PROGRAM CATCORRECT
  ! corrections for photo-z and absorption,
  ! preparation of catalogue for downstream tools
 
-! (c) Piero Ranalli 2014-2015
+! (c) Piero Ranalli 2014-2016
 ! Released under the terms of the GPL v3 (see file COPYING)
 
 
@@ -59,6 +59,12 @@ call optsummary
 
 
 call setcosmology(myH0,myOM,myOL)
+
+
+if (intrinsicflux) then
+   cat%use_intrinsic_fluxes = .true.
+   catcorr%use_intrinsic_fluxes = .true.
+end if
 
 
 if (do_range) then

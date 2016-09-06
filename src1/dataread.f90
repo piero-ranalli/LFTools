@@ -36,10 +36,11 @@ real, private :: gamma
 
 
 type catalogue
-   real, dimension(:), allocatable :: flux,zp,prob,hr,fratio,ra,dec, &  ! read from file
+   real, dimension(:), allocatable :: flux,zp,prob,hr,fratio,intrinsicflux, &  ! read from file
                                       weight,lum,weightcopy,abscorr  ! assigned later
    integer, dimension(:), allocatable :: id,opticalid,zspecflag
    integer :: last, size
+   logical :: use_intrinsic_fluxes
    !logical :: correct4likelihood = .false.
    
    real, dimension(probUsize,probRsize,probzsize), private :: probmatrix
@@ -83,7 +84,7 @@ contains
     integer :: status
 
     allocate( this%flux(size),this%zp(size),this%prob(size),this%hr(size), &
-              this%fratio(size),this%ra(size),this%dec(size), &
+              this%fratio(size),this%intrinsicflux(size), &
               this%weight(size),this%lum(size), this%id(size), this%opticalid(size), &
               this%zspecflag(size), this%abscorr(size), &
               STAT = status )
@@ -96,7 +97,7 @@ contains
   subroutine catalogue_deallocate (this)
     class(catalogue) :: this
 
-    deallocate( this%flux,this%zp,this%prob,this%hr,this%fratio,this%ra,this%dec, &
+    deallocate( this%flux,this%zp,this%prob,this%hr,this%fratio,this%intrinsicflux, &
          this%weight,this%lum, this%id, this%opticalid,this%zspecflag, this%abscorr )
   end subroutine catalogue_deallocate
 
@@ -108,11 +109,13 @@ contains
 
   subroutine catalogue_read (this,infile)
     class(catalogue) :: this
-    integer u,i
     character(*) :: infile
+
+    integer u,i
     character(3) :: foo
     character(256) :: row
 
+    
     open (newunit=u, file=infile, status='old')
 
     i = 1
@@ -120,9 +123,14 @@ contains
        read (u,'(A)',end=5) row
        if (iscomment(row))  cycle
 
-       read (row,*)  this%id(i),this%flux(i),this%zspecflag(i),this%zp(i), &
+       if (this%use_intrinsic_fluxes) then
+          read (row,*)  this%id(i),this%flux(i),this%zspecflag(i),this%zp(i), &
+            this%prob(i),this%fratio(i),this%opticalid(i),this%intrinsicflux(i)
+       else
+          read (row,*)  this%id(i),this%flux(i),this%zspecflag(i),this%zp(i), &
             this%prob(i),this%fratio(i),this%opticalid(i)
-
+       end if
+       
        if (this%zp(i) <= 0) then
           write (*,*) 'redshift ',this%zp(i),' of source ',i,' is <=0'
        end if
@@ -165,12 +173,23 @@ contains
   subroutine flux2lum (this)
     class(catalogue) :: this
 
-    where( this%zp > 0 )
-       this%lum = f2l(this%flux,this%zp)
-    elsewhere
-       this%lum = 0
-       this%weight = 0
-    end where
+    if (this%use_intrinsic_fluxes) then
+       where( this%zp > 0 )
+          this%lum = f2l(this%intrinsicflux,this%zp)
+       elsewhere
+          this%lum = 0
+          this%weight = 0
+       end where
+
+    else
+
+       where( this%zp > 0 )
+          this%lum = f2l(this%flux,this%zp)
+       elsewhere
+          this%lum = 0
+          this%weight = 0
+       end where
+    end if
   end subroutine flux2lum
 
 
@@ -390,6 +409,7 @@ contains
 
     that%id(that%last)     = this%id(i)
     that%flux(that%last)   = this%flux(i) * 10**lumcorr
+    that%intrinsicflux(that%last) = this%intrinsicflux(i) * 10**lumcorr
     that%zp(that%last)     = this%zp(i)
     that%prob(that%last)   = this%prob(i)
     that%hr(that%last)     = this%hr(i)
