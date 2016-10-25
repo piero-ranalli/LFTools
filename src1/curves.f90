@@ -14,11 +14,11 @@ use binarysearch
 
 implicit none
 
-integer, parameter, private :: size = 150
+integer, parameter :: curves_size = 300
 
 
 type curve
-   real, dimension(size) :: x, y
+   real, dimension(curves_size) :: x, y
    integer :: last
  contains
    procedure :: interpolate => curves_interpolate

@@ -53,6 +53,13 @@ contains
        read (row,*) this%x(i),this%y(i)
 
        i=i+1
+
+       if (i>curves_size) then
+          write (*,*) "Area file contains too many lines."
+          write (*,*) "Please recompile after increasing the ""size"" parameter in src1/curves.f90."
+          stop
+       end if
+
     end do
 
 3   close (unit=u)
