@@ -682,7 +682,7 @@ will need to specify in the configuration .json file.
 proper case to the select types, to pass the parameters from MultiNest
 to the luminosity function code.
 
-5. Recompile, calling make both in src2/ and in src2/Multinest/.
+6. Recompile, calling make both in src2/ and in src2/Multinest/.
 
 
 
@@ -690,6 +690,18 @@ Companion programmes
 --------------------
 
 ### Convert MultiNest chains to physical-world scale ###
+
+    ./lf-readchains  config.json 1-post_equal_weights.txt > 1-.rescaled
+
+lf-readchains converts the unity hypercube used by MultiNest into
+physical coordinates. The post_equal_weights output from MultiNest is
+read, rescaled according to the user choice of evolution and parameter
+limits, and output to the terminal. (The output is redirected on a
+file in the example above). Two parameters are needed on the command
+line: the config file, and the post_equal_weights from MultiNest.
+
+lf-readchains is written in Perl and uses the JSON::Tiny and
+File::Slurp modules, which can be installed from CPAN.
 
 
 ### Plot all chains ###

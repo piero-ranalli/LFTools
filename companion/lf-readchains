@@ -1,0 +1,164 @@
+#!/usr/bin/env perl
+
+# use: ./lf-readchains.pl config.json 1-post_equal_weights.txt > 1-.rescaled
+
+use strict;
+use warnings;
+use v5.10;
+
+use Getopt::Long;
+use JSON::Tiny qw/decode_json/;
+use File::Slurp;
+use Math::Trig;
+
+our (@spriorran1,@spriorran2,@iscauchy);
+
+
+unless (@ARGV==2) {
+    die 'Two arguments should be specified on the command line: 1) the JSON config file, and 2) the post_equal_weights.';
+}
+
+
+my $json = read_file($ARGV[0]);
+
+my $config = decode_json $json;
+
+
+my $lastpar;
+my $cauchy = 0;
+
+
+if (exists($config->{priors}) and $config->{priors} eq "cauchygamma") {
+    $cauchy = 1;
+    if ($config->{evolution} eq "lade") {
+	($spriorran1[0],$spriorran2[0],$iscauchy[0]) = @{ $config->{ladecauchygamma}->{A} };
+	($spriorran1[1],$spriorran2[1],$iscauchy[1]) = @{ $config->{ladecauchygamma}->{gamma1} };
+	($spriorran1[2],$spriorran2[2],$iscauchy[2]) = @{ $config->{ladecauchygamma}->{gamma2} };
+	($spriorran1[3],$spriorran2[3],$iscauchy[3]) = @{ $config->{ladecauchygamma}->{Lstar} };
+	($spriorran1[4],$spriorran2[4],$iscauchy[4]) = @{ $config->{ladecauchygamma}->{zc} };
+	($spriorran1[5],$spriorran2[5],$iscauchy[5]) = @{ $config->{ladecauchygamma}->{p1} };
+	($spriorran1[6],$spriorran2[6],$iscauchy[6]) = @{ $config->{ladecauchygamma}->{p2} };
+	($spriorran1[7],$spriorran2[7],$iscauchy[7]) = @{ $config->{ladecauchygamma}->{d} };
+
+	say '# weight A gamma1	gamma2	Lstar zc	p1	p2	d';
+	$lastpar = 7;		# counting from 0
+    } else {
+	($spriorran1[0],$spriorran2[0],$iscauchy[0]) = @{ $config->{lddecauchygamma}->{A} };
+	($spriorran1[1],$spriorran2[1],$iscauchy[1]) = @{ $config->{lddecauchygamma}->{gamma1} };
+	($spriorran1[2],$spriorran2[2],$iscauchy[2]) = @{ $config->{lddecauchygamma}->{gamma2} };
+	($spriorran1[3],$spriorran2[3],$iscauchy[3]) = @{ $config->{lddecauchygamma}->{Lstar} };
+	($spriorran1[4],$spriorran2[4],$iscauchy[4]) = @{ $config->{lddecauchygamma}->{zc} };
+	($spriorran1[5],$spriorran2[5],$iscauchy[5]) = @{ $config->{lddecauchygamma}->{p1} };
+	($spriorran1[6],$spriorran2[6],$iscauchy[6]) = @{ $config->{lddecauchygamma}->{p2} };
+	($spriorran1[7],$spriorran2[7],$iscauchy[7]) = @{ $config->{lddecauchygamma}->{alpha} };
+	($spriorran1[8],$spriorran2[8],$iscauchy[8]) = @{ $config->{lddecauchygamma}->{La} };
+
+	say '# weight A gamma1	gamma2	Lstar zc	p1	p2	alfa	La';
+	$lastpar = 8;
+
+    }
+
+} else {
+    if ($config->{evolution} eq "pdle") {
+	($spriorran1[0],$spriorran2[0]) = @{ $config->{pdlelimits}->{A} };
+	($spriorran1[1],$spriorran2[1]) = @{ $config->{pdlelimits}->{gamma1} };
+	($spriorran1[2],$spriorran2[2]) = @{ $config->{pdlelimits}->{gamma2} };
+	($spriorran1[3],$spriorran2[3]) = @{ $config->{pdlelimits}->{Lstar} };
+	($spriorran1[4],$spriorran2[4]) = @{ $config->{pdlelimits}->{etad} };
+	($spriorran1[5],$spriorran2[5]) = @{ $config->{pdlelimits}->{etal} };
+
+	say '# weight A gamma1	gamma2	Lstar etad etal';
+	$lastpar = 5;		# counting from 0
+
+    } elsif ($config->{evolution} eq "noevol") {
+	($spriorran1[0],$spriorran2[0]) = @{ $config->{noevollimits}->{A} };
+	($spriorran1[1],$spriorran2[1]) = @{ $config->{noevollimits}->{gamma1} };
+	($spriorran1[2],$spriorran2[2]) = @{ $config->{noevollimits}->{gamma2} };
+	($spriorran1[3],$spriorran2[3]) = @{ $config->{noevollimits}->{Lstar} };
+
+	say '# weight A gamma1	gamma2	Lstar ';
+	$lastpar = 3;		# counting from 0
+
+    } elsif ($config->{evolution} eq "lade") {
+	($spriorran1[0],$spriorran2[0]) = @{ $config->{ladelimits}->{A} };
+	($spriorran1[1],$spriorran2[1]) = @{ $config->{ladelimits}->{gamma1} };
+	($spriorran1[2],$spriorran2[2]) = @{ $config->{ladelimits}->{gamma2} };
+	($spriorran1[3],$spriorran2[3]) = @{ $config->{ladelimits}->{Lstar} };
+	($spriorran1[4],$spriorran2[4]) = @{ $config->{ladelimits}->{zc} };
+	($spriorran1[5],$spriorran2[5]) = @{ $config->{ladelimits}->{p1} };
+	($spriorran1[6],$spriorran2[6]) = @{ $config->{ladelimits}->{p2} };
+	($spriorran1[7],$spriorran2[7]) = @{ $config->{ladelimits}->{d} };
+
+	say '# weight A gamma1	gamma2	Lstar zc	p1	p2	d';
+	$lastpar = 7;		# counting from 0
+    } elsif ($config->{evolution} eq "ldde") {
+	($spriorran1[0],$spriorran2[0]) = @{ $config->{lddelimits}->{A} };
+	($spriorran1[1],$spriorran2[1]) = @{ $config->{lddelimits}->{gamma1} };
+	($spriorran1[2],$spriorran2[2]) = @{ $config->{lddelimits}->{gamma2} };
+	($spriorran1[3],$spriorran2[3]) = @{ $config->{lddelimits}->{Lstar} };
+	($spriorran1[4],$spriorran2[4]) = @{ $config->{lddelimits}->{zc} };
+	($spriorran1[5],$spriorran2[5]) = @{ $config->{lddelimits}->{p1} };
+	($spriorran1[6],$spriorran2[6]) = @{ $config->{lddelimits}->{p2} };
+	($spriorran1[7],$spriorran2[7]) = @{ $config->{lddelimits}->{alpha} };
+	($spriorran1[8],$spriorran2[8]) = @{ $config->{lddelimits}->{La} };
+
+	say '# weight A gamma1	gamma2	Lstar zc	p1	p2	alfa	La';
+	$lastpar = 8;
+
+    } elsif ($config->{evolution} eq "ldde15") {
+	($spriorran1[0],$spriorran2[0]) = @{ $config->{ldde15limits}->{A} };
+	($spriorran1[1],$spriorran2[1]) = @{ $config->{ldde15limits}->{gamma1} };
+	($spriorran1[2],$spriorran2[2]) = @{ $config->{ldde15limits}->{gamma2} };
+	($spriorran1[3],$spriorran2[3]) = @{ $config->{ldde15limits}->{Lstar} };
+	($spriorran1[4],$spriorran2[4]) = @{ $config->{ldde15limits}->{zc1} };
+	($spriorran1[5],$spriorran2[5]) = @{ $config->{ldde15limits}->{p1star} };
+	($spriorran1[6],$spriorran2[6]) = @{ $config->{ldde15limits}->{beta1} };
+	($spriorran1[7],$spriorran2[7]) = @{ $config->{ldde15limits}->{Lp} };
+	($spriorran1[8],$spriorran2[8]) = @{ $config->{ldde15limits}->{p2} };
+	($spriorran1[9],$spriorran2[9]) = @{ $config->{ldde15limits}->{alpha1} };
+	($spriorran1[10],$spriorran2[10]) = @{ $config->{ldde15limits}->{La1} };
+	($spriorran1[11],$spriorran2[11]) = @{ $config->{ldde15limits}->{zc2} };
+	($spriorran1[12],$spriorran2[12]) = @{ $config->{ldde15limits}->{p3} };
+	($spriorran1[13],$spriorran2[13]) = @{ $config->{ldde15limits}->{alpha2} };
+	($spriorran1[14],$spriorran2[14]) = @{ $config->{ldde15limits}->{La2} };
+
+	say '# weight A gamma1	gamma2	Lstar zc1	p1star beta1 Lp  p2	alfa1	La1 zc2 p3 alfa2 La2';
+	$lastpar = 14;
+
+    }
+}
+
+
+
+my $w;
+my @pars;
+open (my $ff, '<', $ARGV[1]);
+while(<$ff>) {
+    chomp;
+    (@pars,undef,undef) = split(' ',$_);
+    $w = 1;
+    if ($cauchy) {
+	say  join ' ', $w, map { scalecauchy($pars[$_],$_) } 0..$lastpar;
+    } else {
+	say  join ' ', $w, map { scaleflat($pars[$_],$_) } 0..$lastpar;
+    }
+}
+
+
+
+
+sub scaleflat {
+    my ($x,$i) = @_;
+
+    return  $spriorran1[$i] + $x*($spriorran2[$i]-$spriorran1[$i]);
+}
+
+sub scalecauchy {
+    my ($x,$i) = @_;
+
+    if ($iscauchy[$i]) {
+	return( tan(3.1415927*($x-.5))*$spriorran2[$i] + $spriorran1[$i] );
+    } else { # is gamma
+	return( -log($x) * $spriorran1[$i] );
+    }
+}

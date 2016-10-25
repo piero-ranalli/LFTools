@@ -29,10 +29,10 @@ MOD=$(addsuffix .mod, $(basename $(OBJ)))
 SRC=$(addsuffix .f90, $(basename $(OBJ)))
 
 VALIDATEOBJ=priors.o mn_glue.o params.o lfmnconfig.o lfvalidateconfig.o lppd_etc.o lf-validate.o m_option_parser.o
-VALIDATEMOD=$(addsuffix .mod, $(basename $(OBJ)))
-VALIDATESRC=$(addsuffix .f90, $(basename $(OBJ)))
+VALIDATEMOD=$(addsuffix .mod, $(basename $(VALIDATEOBJ)))
+VALIDATESRC=$(addsuffix .f90, $(basename $(VALIDATEOBJ)))
 
-all: lf-mn lf-validate
+all: lf-mn lf-validate lf-readchains
 
 include Makefile.depend
 
@@ -54,6 +54,9 @@ lf-validate: $(OBJ) $(MOD) $(VALIDATEOBJ) $(VALIDATEMOD) mnunit.o m_option_parse
 lf-mn: $(OBJ) $(MOD) mnunit.o
 	$(FC) $(FAST) -o lf-mn main.o mnunit.o ../unit.o -L$(LIB_FSON) -lfson $(CUBA) $(LDMULTINEST) $(INCLUDE)
 	cp lf-mn $(BIN)
+
+lf-readchains: ../../companion/lf-readchains
+	cp ../../companion/lf-readchains $(BIN)
 
 zeus: $(OBJ) $(MOD) mnzeus.o
 	$(FC)  $(ZEUS) -o lf-mn-zeus main.o mnzeus.o ../zeus.o $(LIB_FSON)/libfson.so $(CUBA) $(LDMULTINEST)
