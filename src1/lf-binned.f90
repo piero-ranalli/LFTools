@@ -33,6 +33,7 @@ type(coverage), target :: area
 integer, allocatable :: catsize(:)
 ! area is passed to lumfunc via areapointer
 
+character*2 :: is_limit
 real ncoggetti ! numero corretto di oggetti
 
 
@@ -82,7 +83,7 @@ do
 
    write (*,*) 'Please insert: LogL_min LogL_max z_min z_max'
    read (5,*,end=9999) llmin,llmax,zmin,zmax
-
+   write (*,*) llmin,llmax,zmin,zmax
 
 
    call cat%selectlum(llmin,llmax)
@@ -98,7 +99,7 @@ do
     end if
 
 
-   if (cat%wcount() < .9) then  ! not even 1 object in the bin
+   if (cat%wcount() < .01) then  ! not even 1 object in the bin
       print *,'not even 1 object in the bin'
       call cat%recoverweights
       cycle
@@ -114,10 +115,11 @@ do
 
    ! the gehrels tables should probably be interpolated and ncoggetti should be used
    ! here; for the moment let's just use the closest integer
-   write (*,*) noggetti, ' objects in the bin'
-   if (noggetti.le.50) then
-      write (*,*) '1sigma interval: ',gehrelsl(noggetti), gehrelsh(noggetti)
-   endif
+   write (*,*) ncoggetti, ' objects in the bin'
+   write (*,*) 'and the log is ',log10(ncoggetti)
+   !if (noggetti.le.50) then
+   !   write (*,*) '1sigma interval: ',gehrelsl(noggetti), gehrelsh(noggetti)
+   !endif
 
 
    ! calc Volume, as the sum of the volumes from all area files
@@ -151,13 +153,24 @@ do
 
    write (*,*) 'llmin llmax zmin zmax phi phi_low phi_up tot_weight'
 
-3434 format (1X,F4.1,1X,F4.1,1X,F5.3,1X,F5.3,1X,F7.3,1X,F7.3,1X,F7.3,1X,F6.1,1X,1A)
+   ! upper limits
+   if (noggetti==0) then
+      is_limit = 'UL'
+      noggetti = 1  ! or gehrelsl/gehrelsh will fail
+      ncoggetti = 1.d0
+   else
+      is_limit = '__'
+   end if
+
+   write (*,*) log10(ncoggetti/intel)
+   
+3434 format (1X,F4.1,1X,F4.1,1X,F5.3,1X,F5.3,1X,F7.3,1X,F7.3,1X,F7.3,1X,A2,1X,F6.1,1X,A1)
 
    write (*,3434) llmin,llmax,zmin,zmax,     &
-        log10(ncoggetti/intel),              &
+        log10(ncoggetti/intel),     &
         log10((gehrelsl(noggetti))/intel),   &
         log10((gehrelsh(noggetti))/intel),   &
-        ncoggetti, '%'
+        is_limit, ncoggetti, '%'
 
    !   write (*,*) 'final dimension of catalogue arrays: ',cat%last
 
