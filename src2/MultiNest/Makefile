@@ -16,7 +16,7 @@ CUBA=
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	FFMULTINEST=-I/Users/piero/SOFTW/MultiNest/modules
-	LDMULTINEST=-L/Users/piero/SOFTW/MultiNest/lib -lmultinest
+	LDMULTINEST=-L/Users/piero/SOFTW/MultiNest/lib -lmultinest_mpi
 endif
 
 FC=gfortran
