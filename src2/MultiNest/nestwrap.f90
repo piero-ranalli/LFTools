@@ -61,7 +61,7 @@ end subroutine getLogLike
 
 ! dumper, called after every updInt*10 iterations
 
-subroutine dumper(nSamples, nlive, nPar, physLive, posterior, paramConstr, maxLogLike, logZ, logZerr, context)
+subroutine dumper(nSamples, nlive, nPar, physLive, posterior, paramConstr, maxLogLike, logZ, INSlogZ, logZerr, context)
 
 	implicit none
 
@@ -72,7 +72,8 @@ subroutine dumper(nSamples, nlive, nPar, physLive, posterior, paramConstr, maxLo
 	double precision, pointer :: posterior(:,:)	! array with the posterior distribution
 	double precision, pointer :: paramConstr(:)	! array with mean, sigmas, maxlike & MAP parameters
 	double precision maxLogLike			! max loglikelihood value
-	double precision logZ				! log evidence
+	double precision logZ				! log evidence value from the default (non-INS) mode
+	double precision INSlogZ			! log evidence value from the INS mode
 	double precision logZerr			! error on log evidence
 	integer context					! not required by MultiNest, any additional information user wants to pass
 	
