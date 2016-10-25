@@ -278,7 +278,7 @@ LFs evolve, i.e. they change their parameters with the
 redshift. Several models have been proposed in the literature;
 currently the most favoured ones are:
 
-  * LDDE (luminosity-dependent density evolution), requiring 5
+  * LDDE (luminosity-dependent density evolution), requiring 5 or 11
     parameters to describe the evolution;
   * LADE (luminosity and density evolution), requiring 4 parameters.
 
@@ -291,9 +291,12 @@ papers (e.g. Aird et al. 2010, ...).
 
 LFtools currently implements the following models:
 
-  * double powerlaw + LDDE;
-  * double powerlaw + LADE;
-  * double powerlaw + LADEBPL.
+  * "noevol":  double powerlaw with no evolution;
+  * "pdle":    double powerlaw + pure density/luminosity evolution;
+  * "ldde":    double powerlaw + LDDE (Ueda et al. 2003 version);
+  * "ldde15":  double powerlaw + LDDE (Ueda et al. 2014 version);
+  * "lade":    double powerlaw + LADE;
+  * "ladebpl": double powerlaw + LADEBPL (original model by Ueda et al. 2003).
 
 We note that LADE here uses a different normalisation than what used
 by Aird et al. (2010). Our normalisation is such that density
