@@ -43,11 +43,13 @@ real function catcoverage(this, f)
 end function catcoverage
 
 
-subroutine readcat (this, filename)
+subroutine readcat (this, filename, zmin,zmax,lmin,lmax)
   use fileutils
 
   class(catalogue) :: this
   character(*)  filename
+  real(kind=rkind), intent(in) :: zmin,zmax,lmin,lmax
+
   character(120) :: row,row2
   integer u,i,catsize
   real(kind=rkind) :: foo
@@ -74,6 +76,11 @@ subroutine readcat (this, filename)
 
      read (row,*) this%id(i), foo, this%weight(i), this%z(i), this%Lx(i), this%includeprob(i)
 
+     ! skip sources outside limits
+     if (this%z(i)  < zmin .or. this%z(i)  > zmax .or.  &
+         this%Lx(i) < lmin .or. this%Lx(i) > lmax)      &
+           cycle
+     
      if (this%Lx(i) > 48) then
         write (*,*) 'error at line ',i
         stop

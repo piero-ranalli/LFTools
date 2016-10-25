@@ -58,7 +58,7 @@ subroutine readcatalogue(i,catfile,areafile)
   character*(*) :: catfile,areafile
 
   write (*,*) 'reading catalogue and area: ',trim(catfile),' ',trim(areafile)
-  call like%cat(i)%readcat(catfile)
+  call like%cat(i)%readcat(catfile,like%zmin,like%zmax,like%lmin,like%lmax)
   call like%cat(i)%readarea(areafile)
 
 
