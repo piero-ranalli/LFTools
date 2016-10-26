@@ -15,7 +15,7 @@ use binarysearch
 
 implicit none
 
-integer, parameter, private :: size = 150
+integer, parameter, private :: size = 300
 
 
 type curve
