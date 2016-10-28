@@ -32,7 +32,7 @@ VALIDATEOBJ=priors.o mn_glue.o params.o lfmnconfig.o lfvalidateconfig.o lppd_etc
 VALIDATEMOD=$(addsuffix .mod, $(basename $(VALIDATEOBJ)))
 VALIDATESRC=$(addsuffix .f90, $(basename $(VALIDATEOBJ)))
 
-all: lf-mn lf-validate lf-readchains
+all: lf-mn lf-validate lf-readchains lf-hpd
 
 include Makefile.depend
 
@@ -57,6 +57,12 @@ lf-mn: $(OBJ) $(MOD) mnunit.o
 
 lf-readchains: ../../companion/lf-readchains
 	cp ../../companion/lf-readchains $(BIN)
+
+lf-hpd: ../../companion/lf-hpd ../../companion/LF/HPD.pm
+	cp ../../companion/lf-hpd $(BIN)
+	mkdir -p $(BIN)/LF
+	cp ../../companion/LF/HPD.pm $(BIN)/LF
+
 
 zeus: $(OBJ) $(MOD) mnzeus.o
 	$(FC)  $(ZEUS) -o lf-mn-zeus main.o mnzeus.o ../zeus.o $(LIB_FSON)/libfson.so $(CUBA) $(LDMULTINEST)

@@ -1,0 +1,102 @@
+#!/usr/bin/env perl
+#
+
+# calculate highest posterior intervals (HPD) from post-equal-weights
+#
+# use: ./lf-hpd  config.json  pew.dat
+# and it will create a series of files called hpd-$z.dat
+
+
+use strict;
+use warnings;
+use v5.10;
+
+use FindBin;
+use lib "$FindBin::Bin/";
+
+use LF::HPD;
+
+use PDL;
+use PDL::NiceSlice;
+
+use JSON::Tiny qw/decode_json/;
+use File::Slurp;
+
+
+die "Please specify a config.json file and post-equal-weights file.\n"
+    unless (@ARGV==2);
+
+my $jsonf = $ARGV[0];
+my $pewf  = $ARGV[1];
+
+my $json = read_file($jsonf);
+my $config = decode_json $json;
+
+
+die "Missing specification for evolution in $jsonf." unless
+    exists($config->{evolution});
+
+
+my $hpd = LF::HPD->new;
+
+if ($config->{evolution} eq 'ldde') {
+    $hpd->read_ldde($pewf);
+
+} elsif ($config->{evolution} eq 'lade') {
+    $hpd->read_lade($pewf);
+
+} elsif ($config->{evolution} eq 'pdle') {
+    $hpd->read_pdle($pewf);
+
+} elsif ($config->{evolution} eq 'noevol') {
+    $hpd->read_noevol($pewf);
+
+} else {
+    die "Unrecognised evolution type in $jsonf.\n";
+}
+
+
+
+my $Lxstep = .1;
+my $Lx = 41 + $Lxstep*sequence(51);
+$hpd->Lx( $Lx );
+
+# normalize weights (they are normalized by MultiNest, but if you cat
+# different chains together then you need to renormalize..)
+$hpd->normalise_weights;
+
+# prepare threaded variables for fast computation
+$hpd->prepare_threads;
+
+# step length for HPD search
+$hpd->epsilon(.001);
+
+for my $z (0,.25,.75,1.25,1.75,2.5,3.5) {
+    $hpd->calc($z);
+
+    # define HPD
+    my $HPD1s = zeroes( $hpd->dimension,2 );
+    my $HPD2s = zeroes( $hpd->dimension,2 );
+    my $HPD3s = zeroes( $hpd->dimension,2 );
+
+    # for each luminosity
+    for my $i (0..$hpd->dimension-1) {
+	# histogram on the sample (1st dimension)
+	$hpd->weighted_hist($i);
+	$HPD1s($i,:) .= $hpd->findHDI(.683);
+	$HPD2s($i,:) .= $hpd->findHDI(.954);
+	$HPD3s($i,:) .= $hpd->findHDI(.997);
+    }
+
+    wcols( $Lx,
+	   $HPD1s(:,0), $HPD1s(:,1),
+	   $HPD2s(:,0), $HPD2s(:,1),
+	   $HPD3s(:,0), $HPD3s(:,1),
+	   sprintf("hpd-%04.2f.dat",$z),
+	   { Header => '# Lx HPD_1sigma_low HPD_1_up HPD_2_l HPD_2_u HPD_3_l HPD_3_u' },
+	 );
+}
+
+exit;
+
+

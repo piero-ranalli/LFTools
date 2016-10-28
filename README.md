@@ -694,7 +694,7 @@ Companion programmes
 
 ### Convert MultiNest chains to physical-world scale ###
 
-    ./lf-readchains  config.json 1-post_equal_weights.txt > 1-.rescaled
+    ./lf-readchains  config.json 1-post_equal_weights.txt > pew-rescaled.dat
 
 lf-readchains converts the unity hypercube used by MultiNest into
 physical coordinates. The post_equal_weights output from MultiNest is
@@ -711,6 +711,22 @@ File::Slurp modules, which can be installed from CPAN.
 
 
 ### Compute and plot Highest Posterior Densities (HPD) ###
+
+    ./lf-hpd  config.json pew-rescaled.dat
+
+lf-hpd computes the 1, 2 and 3 sigma HPD intervals from the set of
+samples of LF (calculated with lf-mn and rescaled with
+lf-readchains). lf-phd will output a series of files, one for the
+following redshifts: 0, 0.25, 0.75, 1.25, 1.75, 2.5, 3.5. Each files
+contains a table with the following columns: luminosity, 1 sigma lower
+bound of the interval, 1 sigma upper bound, 2 sigma lower bound, 2
+sigma upper bound, 3 sigma lower bound, 3 sigma upper bound.
+
+lf-hpd is written in Perl and uses the following modules which can be
+installed from either CPAN or the linux distribution repositories or
+macports: Moose, PDL; and the following which can be installed from
+CPAN: JSON::Tiny, File::Slurp.
+
 
 
 
