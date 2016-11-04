@@ -7,7 +7,7 @@ module lfmnconfig  ! configuration for lf-mn
   
   implicit none
   integer, private :: i, ncats, nprioritems
-  character(len=256), private :: config,cat,area
+  character(len=256), private :: config,cat,area,Umarginaldistr
   type(fson_value), pointer, private :: pars,catarray,catitem
   character(len=6), private :: evtype
   character(len=11), private :: priortype
@@ -42,7 +42,11 @@ contains
 
     ! allocate structures
     call allocatelf(evtype,zmin,zmax,lmin,lmax)
-    if (do_nhcorr)  call start_umarginal
+    if (do_nhcorr)  then
+       call fson_get(pars,"Umarginal",Umarginaldistr)
+       call start_umarginal(Umarginaldistr)
+    end if
+
     
     ! read catalogues
     ncats = fson_value_count(catarray)
