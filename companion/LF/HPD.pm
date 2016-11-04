@@ -202,10 +202,11 @@ sub calc {
 sub weighted_hist {
     my $self = shift;
     my $i = shift;
+    my $dx = shift;
 
     my $yt = $self->yt;
     my $wt = $self->wt;
-    my ($hx,$hy) = whist( $yt->slice(":,$i"), $wt->slice(":,$i"), -8, -2.5, .01 );
+    my ($hx,$hy) = whist( $yt->slice(":,$i"), $wt->slice(":,$i"), -8, -2.5, $dx );
     $self->hx($hx);
     $self->hy($hy);
 }
@@ -327,13 +328,28 @@ sub findHDI {
     $levy -= $self->epsilon while ($hy->where($hy>$levy)->sum < $lev);
 
     # find abscissas
-    my $half = $hy->maximum_ind;
-    my $lower = vsearch( $levy, $hy->slice("0:$half") );
-    my $upper = vsearch( $levy, $hy->slice("$half:-1") );
+    my $abs = $hx->where($hy>$levy);
+    my $lower = $abs->at(0);
+    my $upper = $abs->at(-1);
+    my $hdi = pdl( [$lower,$upper] );
 
-    my $hdi = pdl( [$hx->at($lower),$hx->at($half+$upper)] );
+    #my $half = $hy->maximum_ind;
+    #my $lower = vsearch( $levy, $hy->slice("0:$half") );
+    #my $upper = vsearch( $levy, $hy->slice("$half:-1") );
+    #my $hdi = pdl( [$hx->at($lower),$hx->at($half+$upper)] );
     return $hdi;
 }
 
+
+sub plot {
+    require PDL::Graphics::PGPLOT;
+    PDL::Graphics::PGPLOT->import(qw/dev line/);
+
+    my $self = shift;
+
+    dev('/cps');
+    line($self->hx,$self->hy);
+
+}
 
 1;

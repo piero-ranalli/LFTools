@@ -3,7 +3,7 @@
 
 # calculate highest posterior intervals (HPD) from post-equal-weights
 #
-# use: ./lf-hpd  config.json  pew.dat
+# use: ./lf-hpd  [--plot] [--dx=0.025] [--dy=0.001] config.json  pew.dat
 # and it will create a series of files called hpd-$z.dat
 
 
@@ -21,6 +21,17 @@ use PDL::NiceSlice;
 
 use JSON::Tiny qw/decode_json/;
 use File::Slurp;
+
+use Getopt::Long;
+
+my $doplot = 0;
+my $dx = .025;
+my $dy = .001;
+
+GetOptions( 'plot' => \$doplot,
+	    'dx=s' => \$dx,
+	    'dy=s' => \$dy
+	  );
 
 
 die "Please specify a config.json file and post-equal-weights file.\n"
@@ -69,7 +80,7 @@ $hpd->normalise_weights;
 $hpd->prepare_threads;
 
 # step length for HPD search
-$hpd->epsilon(.001);
+$hpd->epsilon($dy);
 
 for my $z (0,.25,.75,1.25,1.75,2.5,3.5) {
     $hpd->calc($z);
@@ -80,12 +91,15 @@ for my $z (0,.25,.75,1.25,1.75,2.5,3.5) {
     my $HPD3s = zeroes( $hpd->dimension,2 );
 
     # for each luminosity
+    my $half = floor($hpd->dimension / 2);
     for my $i (0..$hpd->dimension-1) {
 	# histogram on the sample (1st dimension)
-	$hpd->weighted_hist($i);
-	$HPD1s($i,:) .= $hpd->findHDI(.683);
-	$HPD2s($i,:) .= $hpd->findHDI(.954);
-	$HPD3s($i,:) .= $hpd->findHDI(.997);
+	$hpd->weighted_hist($i,$dx);
+	$HPD1s($i,:) .= $hpd->findHDI(.683)->transpose;
+	$HPD2s($i,:) .= $hpd->findHDI(.954)->transpose;
+	$HPD3s($i,:) .= $hpd->findHDI(.997)->transpose;
+
+	$hpd->plot if ($z==0 and $i==$half and $doplot);
     }
 
     wcols( $Lx,
