@@ -25,14 +25,15 @@ contains
 !   procedure :: read_umarginal => catalogue_read_umarginal
 
 
-  subroutine read_umarginal(Upoint,usize)
+  subroutine read_umarginal(Umargfile,Upoint,usize)
+    character(*) :: Umargfile
     real(kind=rkind), dimension(:), pointer :: Upoint
     integer usize
     integer u,i,j
     real foo
 
 
-    open (newunit=u, file='Umarginal-burlon.dat', status='old')
+    open (newunit=u, file=Umargfile, status='old')
     ! format of the above file:
     ! 1st line, logU (40 of them)
     ! 2nd-last lines, 121 vectors of probabilities:

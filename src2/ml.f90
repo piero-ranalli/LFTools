@@ -50,9 +50,11 @@ integer, private ::  catno  ! pass the cat number to the contained functions
 
 contains
 
-subroutine catalogue_setup_umarginal(this)
+subroutine catalogue_setup_umarginal(this,Umarg)
+  character(*) :: Umarg
+
   class(lf_with_likelihood) :: this
-  call read_umarginal(this%problogU, this%usize)
+  call read_umarginal(Umarg, this%problogU, this%usize)
 end subroutine catalogue_setup_umarginal
 
 

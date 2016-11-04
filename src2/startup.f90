@@ -75,10 +75,12 @@ subroutine setlastcat(i)
 end subroutine setlastcat
 
 
-subroutine start_umarginal
+subroutine start_umarginal(Umarg)
+  character(*) :: Umarg
+  
   write (*,*) 'setting up U marginal probabilities...'
   like%do_nhcorr = .true.
-  call like%setup_umarginal
+  call like%setup_umarginal(Umarg)
 end subroutine start_umarginal
 
 
