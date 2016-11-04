@@ -91,7 +91,7 @@ do
 
 
    if (do_nhcorr)  then
-      call lumfunc_setup
+      call lumfunc_setup(Umarginaldistr)
       calccoverage => obscoverage
       write (*,*) 'Doing nh corrections'
    else

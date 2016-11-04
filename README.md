@@ -607,6 +607,7 @@ The following is an example of a configuration file:
 		    "OM" : 0.3
 		    },
         "nhcorr" : 1,
+	"Umarginal" : "Umarginal-burlon.dat",
 	"evolution" : "ldde",
         "root" : "chains/test-",
         "seed" : 8471

@@ -25,8 +25,9 @@ procedure (icoverage), pointer :: calccoverage => null()
 
 contains
 
-  subroutine lumfunc_setup
-    call read_umarginal(problogU, usize)
+  subroutine lumfunc_setup(Umarg)
+    character(*) :: Umarg
+    call read_umarginal(Umarg, problogU, usize)
   end subroutine lumfunc_setup
 
 

@@ -8,6 +8,7 @@ module lfbinnedconfig  ! configuration for lf-binned
   implicit none
   integer, private :: i, ncats
   character(len=256), private :: config
+  character(len=256) :: Umarginaldistr
   type(fson_value), pointer, private :: pars,catarray,catitem
 
   ! public
@@ -31,6 +32,8 @@ contains
 
     call fson_get(pars,"catalogues",catarray)
     call fson_get(pars,"nhcorr",do_nhcorr)
+    if (do_nhcorr)  call fson_get(pars,"Umarginal",Umarginaldistr)
+
     
     ! read catalogues
     ncats = fson_value_count(catarray)
