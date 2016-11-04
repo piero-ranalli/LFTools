@@ -123,7 +123,7 @@ do
 
 
    ! calc Volume, as the sum of the volumes from all area files
-
+   ! (this is Eq.9 in Ranalli et al. 2016)
    intel= 0
 
    do i=1, size(arealist)
@@ -131,6 +131,7 @@ do
       call area%read( arealist(i) )
       areapointer => area
 
+      ! outer integral, on dL
       passol = (llmax-llmin)/300.d0
       ll0 = llmin
       do while (ll0.le.llmax)
