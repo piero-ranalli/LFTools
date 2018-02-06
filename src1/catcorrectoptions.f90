@@ -7,7 +7,7 @@ module catcorrectoptions
   
   ! command line parameters
   type(option_t)    , allocatable :: program_options(:)
-  character*256 infile, outfile, completenessfile
+  character*256 infile, outfile, completenessfile, RUzmatrixfile
   logical do_nhcorr, do_photozpdf, do_range, do_compl
   logical in_cmd_line, do_selectprob
   logical save_abs_corr, intrinsicflux
@@ -29,7 +29,7 @@ contains
     ! read command line parameters
     call set_parser_options ( with_equal_sign = .true. )
 
-    allocate( program_options(16) )
+    allocate( program_options(17) )
 
     call set_option ( program_options , "--infile" , "" , 'inputcatalogue.dat'  &
          , "Input catalogue" )
@@ -45,6 +45,8 @@ contains
          , "Photo-z PDF path" )
     call set_option ( program_options , "--nhcorr" , "" , .false.   &
          , "Correct for absorption" )
+    call set_option ( program_options , "--RUzmatrix" , "" , "RUzmatrix-burlon.dat"   &
+         , "RUz matrix file" )
     call set_option ( program_options , "--photozpdf" , "" , .false.   &
          , "Correct for photo-z" )
     call set_option ( program_options , "--kcorrgamma" , "", 1.7    &
@@ -94,6 +96,8 @@ contains
          pdfpath , in_cmd_line )
     call get_option_value ( program_options , "--nhcorr" ,     &
          do_nhcorr , in_cmd_line )
+    call get_option_value ( program_options , "--RUzmatrix" ,     &
+         RUzmatrixfile , in_cmd_line )
     call get_option_value ( program_options , "--photozpdf" ,  &
          do_photozpdf , in_cmd_line )
     call get_option_value ( program_options , "--kcorrgamma" ,  &

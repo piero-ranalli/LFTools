@@ -166,7 +166,7 @@ again XMM-COSMOS as an example:
 
     ./lf-catcorrect --infile=xmmcosmos-formatted-cat.dat
                    --outfile=xmmcosmos-corrected-cat.dat
-                   --nhcorr=T  --savenhcorr
+                   --nhcorr=T  --savenhcorr  --RUzmatrix=RUzmatrix-burlon.dat
                    --photozpdf=T
                    --pdfstart=63 --pdfstop=713
                    --pdfpath=/home/piero/Dati/Teoria/XMMLSS/SPEC_files_cosmos/
@@ -180,6 +180,7 @@ In this example we have specified all possible options:
   * input and output files (infile, outfile);
   * corrections for absorption (nhprob);
   * save the applied absorption corrections as a further column in outfile;
+  * use the file RUzmatrix-burlon.dat for the absorption corrections;
   * corrections for photoz uncertainties (photozpdf);
   * photoz files are in .../SPEC_files_cosmos;
   * photoz information starts at line 63 and goes on to line 713;

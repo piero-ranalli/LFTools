@@ -97,7 +97,7 @@ if (do_nhcorr) then
    write(*,*) 'correcting for absorption'
 
    call catcorr%reset
-   call cat%read_probmatrix
+   call cat%read_probmatrix(RUzmatrixfile)
    call cat%correct_w_hr_nh_prob(catcorr)
    
    !write (*,*) 'somma dei flussi ',sum(cat%flux),sum(catcorr%flux)

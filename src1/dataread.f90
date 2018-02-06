@@ -288,12 +288,13 @@ contains
 
 
 
-  subroutine catalogue_read_probmatrix (this)
+  subroutine catalogue_read_probmatrix (this, RUzmatrixfile)
     class(catalogue) :: this
+    character*(*) :: RUzmatrixfile
     integer u,i,j,k
 
 
-    open (newunit=u, file='RUzmatrix.dat',status='old')
+    open (newunit=u, file=RUzmatrixfile, status='old')
     ! format of the above file:  
     ! 1st line, logR (80 of them)
     ! 2nd line, logU (40 of them)
@@ -321,7 +322,7 @@ contains
 
     return
 
-4042 write (*,*) 'premature end of file RUmatrix.dat'
+4042 write (*,*) 'premature end of file ',RUzmatrixfile
     stop
 
   end subroutine catalogue_read_probmatrix
