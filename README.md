@@ -172,7 +172,7 @@ again XMM-COSMOS as an example:
                    --pdfpath=/home/piero/Dati/Teoria/XMMLSS/SPEC_files_cosmos/
                    --kcorrgamma=1.7
 		   --complcorr=T
-		   --corrfile=xmmcosmos-fluxhisto.dat
+		   --complcorrfile=xmmcosmos-fluxhisto.dat
 		   --intrinsicflux=F
 
 In this example we have specified all possible options:
