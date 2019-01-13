@@ -15,7 +15,7 @@ module catcorrectoptions
   integer pdfstart,pdfstop
   character (len=photozpathlen) :: pdfpath
   integer err
-  real :: gamma
+  real :: gamma, minlogR
 
   ! end of command line pars
 
@@ -29,7 +29,7 @@ contains
     ! read command line parameters
     call set_parser_options ( with_equal_sign = .true. )
 
-    allocate( program_options(17) )
+    allocate( program_options(18) )
 
     call set_option ( program_options , "--infile" , "" , 'inputcatalogue.dat'  &
          , "Input catalogue" )
@@ -47,6 +47,8 @@ contains
          , "Correct for absorption" )
     call set_option ( program_options , "--RUzmatrix" , "" , "RUzmatrix-burlon.dat"   &
          , "RUz matrix file" )
+    call set_option ( program_options , "--minLogR" , "" , -4.   &
+         , "minimum Log(R) found in RUzmatrix" )
     call set_option ( program_options , "--photozpdf" , "" , .false.   &
          , "Correct for photo-z" )
     call set_option ( program_options , "--kcorrgamma" , "", 1.7    &
@@ -98,6 +100,8 @@ contains
          do_nhcorr , in_cmd_line )
     call get_option_value ( program_options , "--RUzmatrix" ,     &
          RUzmatrixfile , in_cmd_line )
+    call get_option_value ( program_options , "--minLogR" ,     &
+         minlogR , in_cmd_line )
     call get_option_value ( program_options , "--photozpdf" ,  &
          do_photozpdf , in_cmd_line )
     call get_option_value ( program_options , "--kcorrgamma" ,  &
@@ -117,8 +121,7 @@ contains
     call get_option_value ( program_options , "--intrinsicflux" ,         &
          intrinsicflux , in_cmd_line )
 
-    !      write (*,*) do_nhcorr,do_fluxcorr,do_areacorr,do_photozpdf,
-    !     $    do_selectprob,do_cdfs,do_lss,do_cosmos
+    write (*,*) minlogR, RUzmatrixfile
 
 
   end subroutine parseopt

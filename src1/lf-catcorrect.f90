@@ -75,6 +75,8 @@ endif
 
 call cat%read(infile)
 
+call cat%set_min_logR(minlogR)
+
 nbefore = cat%wcount()
 
 if (do_compl) then

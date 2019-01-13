@@ -56,6 +56,7 @@ type catalogue
    procedure :: selectprob => catalogue_selectprob
    procedure :: selectz    => catalogue_selectz
    procedure :: selectlum  => catalogue_selectlum
+   procedure :: set_min_logR => catalogue_set_min_logR
    !procedure :: set_likelihood_completeness => catalogue_set_likelihood_completeness
    procedure :: correct_w_fluxes => catalogue_correct_w_fluxes
    procedure :: read_probmatrix => catalogue_read_probmatrix
@@ -107,6 +108,15 @@ contains
     this%last = 0
   end subroutine catalogue_reset
 
+  subroutine catalogue_set_min_logR (this, minlogR)
+    class(catalogue) :: this
+    real, intent(in) :: minlogR
+
+    where (this%fratio < 10.**minlogR)
+       this%fratio = 10.**minlogR
+    end where
+  end subroutine catalogue_set_min_logR
+  
   subroutine catalogue_read (this,infile)
     class(catalogue) :: this
     character(*) :: infile
