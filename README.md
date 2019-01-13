@@ -31,6 +31,7 @@ repository. Then unzip and cd into the LFtools directory:
     cd LFtools
 
 Start by compiling the FSON and m_option_parser libraries:
+
     cd libextra/fson
     make
     cd ../m_option_parser
