@@ -12,26 +12,6 @@ samples. Companion software includes plotting routines.
 Installation
 ------------
 
-### Binary installation ###
-
-Binary files are provided for Linux and Mac at the address http://www.astro.lu.se/~piero/LFtools/index.html .
-
-The maximum-likelihood programme (`lf-ml`) also needs
-[CERNLIB](http://cernlib.web.cern.ch/cernlib/). Ubuntu users can
-install it from the standard repositories; all other users should get
-them from CERN (link above).
-
-The following libraries are also needed for `lf-mn`:
-
-  * [BLAS](http://en.wikipedia.org/wiki/Blas) (any version);
-  * openmpi
-
-They are available, for Mageia and Ubuntu, from the standard
-repositories and can be therefore installed from there. For CentOS,
-which does not provide up-to-date compilers and libraries, we offer
-a tar (`centos6-libextra.tgz`) containing precompiled versions of
-libopenmpi and libgfortran.
-
 
 ### Source installation ###
 
@@ -166,7 +146,8 @@ again XMM-COSMOS as an example:
 
     ./lf-catcorrect --infile=xmmcosmos-formatted-cat.dat
                    --outfile=xmmcosmos-corrected-cat.dat
-                   --nhcorr=T  --savenhcorr  --RUzmatrix=RUzmatrix-burlon.dat
+                   --nhcorr=T  --savenhcorr
+		   --RUzmatrix=RUzmatrix-burlon.dat -minLogR=-4
                    --photozpdf=T
                    --pdfstart=63 --pdfstop=713
                    --pdfpath=/home/piero/Dati/Teoria/XMMLSS/SPEC_files_cosmos/
@@ -180,7 +161,7 @@ In this example we have specified all possible options:
   * input and output files (infile, outfile);
   * corrections for absorption (nhprob);
   * save the applied absorption corrections as a further column in outfile;
-  * use the file RUzmatrix-burlon.dat for the absorption corrections;
+  * use the file RUzmatrix-burlon.dat for the absorption corrections, with a minimum logR = 4;
   * corrections for photoz uncertainties (photozpdf);
   * photoz files are in .../SPEC_files_cosmos;
   * photoz information starts at line 63 and goes on to line 713;
